@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The version in `expansion.yaml` is the single source of truth for a release; the
 root `package.json` and `package-lock.json` mirror it.
 
-## [Unreleased]
+## [1.4.1] - 2026-07-23
+
+**Docs-only patch on the consolidation train.** No code changes; the web app is identical to 1.4.0.
 
 ### Changed
 
