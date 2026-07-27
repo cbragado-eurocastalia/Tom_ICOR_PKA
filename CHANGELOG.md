@@ -2,6 +2,44 @@
 
 All notable changes to the myPKA scaffold are tracked here. Versions follow semver: MAJOR for breaking structural changes, MINOR for additions, PATCH for fixes.
 
+## [5.1.2] - 2026-07-27
+
+**The Slack Expansion is discontinued.** myICOR no longer offers or supports it. Its pin is gone from the shipped trust registry, every scaffold surface that presented it as an available official pack has been reworded, and the security gate now has an explicit way to say "withdrawn" instead of falling back to the much weaker "not pinned yet." No structural changes; nothing in your folder moves.
+
+> **This is not a security advisory.** No vulnerability was found in the pack, nothing was exploited, and no data leaked. It is retired because an always-on background listener holding live Slack workspace tokens is more than we are willing to keep standing behind, and because it was the most complicated thing we shipped. There is no newer version to move to: the supported path is to retire it, not to upgrade.
+
+> **If you already run it, nothing breaks and nothing is removed.** `Expansions/*/` is user state and the scaffold updater never touches it. Your installed pack keeps running exactly as it did. What changes is that it is unsupported, no longer downloadable, and a fresh install is now refused by the security gate. To retire it: stop the listener (`Expansions/slack/scripts/uninstall.sh`, or unload `~/Library/LaunchAgents/com.mypka.slack-listener.plist`), then **revoke the tokens at Slack**, which is the step that actually matters. Open `api.slack.com/apps`, select your app, delete it: that invalidates the `xoxb` and `xapp` tokens in one move and removes the bot from your workspace. Deleting the local `.env` does none of that, because a copy survives in backups and the bot stays installed. Then clear `Expansions/slack/` and, if you do not want the captured message history, `Team Inbox/slack-incoming/` and `slack-outgoing/`. [[WS-003-install-an-expansion]] §Uninstall walks the scaffold side with you, and the full notice ships in `Expansions/.trusted-sources`.
+
+### Removed
+
+- **`slack@1.0.6` is no longer pinned in `Expansions/.trusted-sources`.** The shipped file is a mirror of the versions currently served, and Slack is no longer one of them. Historical Slack pins remain in the canonical registry in the private `mypka-expansions` repo: that registry is an append-only audit record, and members who still hold a downloaded artifact must keep being able to verify its bytes.
+- **Slack removed from the roadmap and membership surfaces in `WAY-FORWARD.md`.** The "Slack integration" line in the AI Library section and the Slack mention in the out-of-scope list both described an offering that no longer exists.
+
+### Added
+
+- **A `WITHDRAWN` block in `Expansions/.trusted-sources`, and a matching resolution in WS-003 §2 check 1.** Removing a pin on its own is not a withdrawal signal. An absent pin resolves YELLOW, which means "this version has not been audited yet, override if you are sure" and reads as a temporary state a member is invited to click past. That is the opposite of what withdrawal means. A slug named in the new `WITHDRAWN` block now resolves **RED with no override path**, regardless of hash: a matching hash proves the bytes are authentic, never that the pack is still supported. Line format is `<slug> WITHDRAWN <YYYY-MM-DD> reason=<token>`, deliberately without a `sha256=` field so it can never be mistaken for a pin.
+- **The withdrawal notice ships with the pin registry and is the gate's source text.** The comment block above each withdrawn slug is what the gate reads out, rather than wording improvised per session. WS-003 §2 now carries hard rules for that copy: withdrawal is a posture decision, so the gate never claims a vulnerability was found, never manufactures urgency, and never points a member at a newer version of a withdrawn pack. Where the notice names credential-revocation steps, the gate delivers them verbatim, because removing local files does not revoke a credential a third-party service still honors.
+- **The reinstall-your-own-copy case is answered in the notice, not with an override.** A member restoring after a machine move still gets RED. Someone who already holds live third-party credentials is not made safer by a smooth reinstall, so the answer is the offboarding steps; the retained pin in the canonical registry stays available for byte-verifying the copy they hold.
+- **A withdrawn pack that is already installed gets a status line, once.** The install gate only fires on an install, so it never reaches the person still running the pack. Larry's Expansion Discovery now marks that row `withdrawn` in `Expansions/INDEX.md` with the withdrawal date, and states the notice a single time; if the previous INDEX already recorded it as withdrawn, he stays quiet. No re-install flow, no folder changes, no recurring reminder. Your installed Expansions are yours, and withdrawal never reaches in and removes anything.
+
+### Changed
+
+- **The `slack/` slug stays RESERVED** in the `Expansions/docs/expansion-spec.md` naming table, now marked withdrawn. Withdrawing a pack must not free its slug: an unreserved `slack/` could be claimed by a third-party Expansion trading on the myICOR name. Reservation plus refusal is the correct end state, not deletion.
+- **Expansion-spec Example 2 is now a generic, clearly illustrative chat-relay runtime** (`acme-chat-relay`, MIT, third-party author) instead of the Slack Expansion manifest. The old example doubled as advertising, carried a `homepage:` URL that no longer resolves, and presented `author: myICOR` on a pack that is no longer issued. Every schema feature it demonstrated (runtime block, launchd plist, sensitive env vars, `residual_paths`) is preserved.
+- **Slack dropped from the install-trigger examples** in root `AGENTS.md`, `Team/Larry - Orchestrator/AGENTS.md`, and WS-003's trigger contract, and from Larry's AI Library answer. The triggers themselves are unchanged; only the illustrative pack name moved to one that is actually offered.
+- **The manifest-tampering security table in the Expansion spec gains a "Withdrawn packs" row**, and root `AGENTS.md` plus Larry's Expansion Discovery routine now name the withdrawn-slug refusal alongside the hash check.
+
+### Not changed, deliberately
+
+- **Generic Slack references survive.** The WS-003 §2 check 5 and spec security rule about `unfurl_links: false` / `unfurl_media: false` are guidance for anyone building a chat relay against the Slack API, not an offer of a myICOR pack. Prose examples elsewhere in the folder that merely name Slack as a tool are untouched.
+- **Historical CHANGELOG entries are not rewritten.** Earlier releases that pinned `slack@1.0.2` / `1.0.3` / `1.0.6` describe what actually shipped on those dates. A changelog that edits its own past is worth less than one that does not.
+
+### Version files
+
+- `manifest.json` → `scaffold_version` `5.1.2` (authoritative SSOT), `breaking: false`.
+- `VERSION` → `5.1.2` (mirror of the manifest).
+- `.scaffold-version` → `5.1.2` (mirror of the manifest).
+
 ## [5.1.1] - 2026-07-23
 
 **Consolidation patch.** The bundled Cockpit's source of truth moves into this repository and the release pipeline now builds and verifies it on every cut; the bundled Cockpit becomes **1.4.1** (docs-only patch: the 1.4.0 install docs still described a standalone download that never existed). No functional changes for members beyond corrected install docs.

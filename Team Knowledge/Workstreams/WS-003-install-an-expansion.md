@@ -21,7 +21,7 @@ Take a folder dropped into `Expansions/`, validate it, security-review it, merge
 
 | User says (or implies) | Action |
 |---|---|
-| "install the [X] Expansion" / "install Slack" / "install the [X] pack" | Run this workstream from §1 |
+| "install the [X] Expansion" / "install the Designer Pack" / "install the [X] pack" | Run this workstream from §1 |
 | "I dropped the [X] pack into Expansions/" / "there's a new folder in Expansions" | Detect → confirm → run §1 |
 | "uninstall [X]" / "remove the [X] Expansion" / "rip out [X]" | Run **§Uninstall** |
 | (Larry-detected at session boot — new folder in `Expansions/` with valid `expansion.yaml` and not yet recorded in `Expansions/INDEX.md`) | Announce + offer to run §1 |
@@ -75,6 +75,10 @@ Vex audits the Expansion folder before any merge happens. This is a hard gate �
 Vex's checks:
 
 1. **Trust tier check.** If `author: myICOR`, compute sha256 of `expansion.yaml` and verify it against the local pin registry at `Expansions/.trusted-sources` (ships with the scaffold; each scaffold release refreshes it with the current official-pack pins), or — if no entry exists for this slug@version — against the integrity hash published on the myICOR Expansion Packs page. Match → green (auto-trust). Mismatch → red (refuse). No pin and no published hash → yellow (this version hasn't been pinned yet — proceed only with explicit user override).
+   - **Withdrawn packs → red, regardless of hash.** If the Expansion's slug appears in the `WITHDRAWN` block at the bottom of `Expansions/.trusted-sources`, refuse the install. A matching hash would only prove the bytes are authentic; it says nothing about whether the pack is still maintained. This outcome has no override path, and it is deliberately distinct from "not pinned yet" (yellow), which means the opposite thing.
+     - **Read the notice out; do not improvise.** The comment block above the slug's `WITHDRAWN` line is the source text for this verdict. Deliver it, then offer **§Uninstall** for the scaffold side.
+     - **Wording rules, hard.** Withdrawal is a posture decision, not an advisory. Never state or imply that a vulnerability was found, that the pack was exploited, or that data leaked, unless the notice itself says so. Never manufacture urgency: this is an end-of-life, not an incident. Never point the user at a newer version of a withdrawn pack; the supported path is to retire it, not to upgrade. If the notice names credential-revocation steps, deliver those verbatim, because deleting local files does not revoke a credential a third-party service still honors.
+     - **A member reinstalling their own copy still gets red.** Machine moves and restores are not an exception and do not reopen an override path. Someone who already holds live third-party credentials is not made safer by a smooth reinstall; the answer is the offboarding steps in the notice. Their retained pin in the canonical registry remains available for byte-verifying the artifact they hold.
 2. **Token handling sweep.** Grep the Expansion folder for any committed token-shaped string (`xoxb-`, `xapp-`, `sk-`, `ghp_`, etc.). Hit → red (block install — author shipped a credential).
 3. **`.env.example` review.** Confirm `.env.example` lists only env-var keys, no values, no real tokens.
 4. **Permission surface review.** For `connector` and `runtime` types: confirm the manifest's `env_vars`, `mcp_servers`, and runtime block match what the Expansion code actually does (no smuggled-in network calls, no unannounced spawns).
@@ -109,7 +113,7 @@ For each `{ name, role, folder }` entry:
 For each `{ default_owner, file }` entry:
 
 1. Read the next free `SOP-NNN` slot by scanning `Team Knowledge/SOPs/` (zero-padded, no skips per [[GL-001-file-naming-conventions]]).
-2. Copy `Expansions/<slug>/sops/<file>` (or wherever the manifest points) to `Team Knowledge/SOPs/SOP-NNN-<derived-slug>.md`. Slug derived from the source filename minus the descriptive `SOP-` prefix the author used (e.g. `SOP-slack-post-message.md` → slug `slack-post-message` → `SOP-NNN-slack-post-message.md`).
+2. Copy `Expansions/<slug>/sops/<file>` (or wherever the manifest points) to `Team Knowledge/SOPs/SOP-NNN-<derived-slug>.md`. Slug derived from the source filename minus the descriptive `SOP-` prefix the author used (e.g. `SOP-notion-fetch.md` → slug `notion-fetch` → `SOP-NNN-notion-fetch.md`).
 3. Update `Team Knowledge/SOPs/INDEX.md` with a new row: number, title, default owner, one-line description.
 4. If the SOP body references its own filename (back-pointers, internal links), Nolan rewrites those references to the new auto-numbered name. **All internal `[[wikilinks]]` are checked.**
 
@@ -271,9 +275,12 @@ Write the uninstall session-log entry. Update `Expansions/INDEX.md` to remove th
 | Vex flags YELLOW, user overrides | Logged in the session-log with explicit user-consent line. Vex re-audits if the Expansion is later updated. |
 | Vex flags RED | Install blocked. No override. Larry tells the user the specific concern. |
 | Vex is not installed (no App Developer Pack) | The §2 gate stays hard: Larry executes the §2 security checklist himself before any Expansion install, records the verdict in the session-log, and applies the same GREEN/YELLOW/RED outcomes. |
+| The Expansion's slug is in the `WITHDRAWN` block of `Expansions/.trusted-sources` | RED at §2 check 1, regardless of hash. Install blocked, no override. Larry reads out the notice above that slug's line, then offers **§Uninstall**. Posture wording only: no vulnerability claim, no urgency, no "upgrade instead". |
+| A member reinstalls a withdrawn pack they already own (machine move, restore from backup) | Still RED. Not an exception, and not a reason to reopen an override path. Deliver the offboarding steps from the notice instead. The pack's pin stays in the canonical registry so the member can still byte-verify the artifact they hold. |
+| A withdrawn pack is **already installed** | The install gate never fires for it, so the notice would otherwise never reach the one person still running it. Larry's Expansion Discovery marks the `INDEX.md` row `withdrawn` and states the notice **once**, then stays quiet. No re-install flow, no folder changes, no recurring reminder. |
 | `requires_agents` missing | Install blocked. Larry tells the user "install <X> Expansion first" or "run SOP-001 to hire <X>". |
 | Collision: `Team/<folder>/` already exists | Nolan stops at §3. User chooses: rename (suffix `-from-<slug>`), skip that agent, or abort install. |
-| Collision: SOP slug already taken | Nolan auto-resolves by appending `-<slug>` to the SOP slug (e.g., `SOP-NNN-post-message-slack.md`). |
+| Collision: SOP slug already taken | Nolan auto-resolves by appending `-<slug>` to the SOP slug (e.g., `SOP-NNN-fetch-notion-connector.md`). |
 | Mid-install failure | Nolan rolls back §3 writes. Mack rolls back §5 if reached. Vault returns to pre-install state. Failure logged. |
 | Post-install validation fails | Larry surfaces; user chooses re-run or accept. |
 | User uninstalls then reinstalls a different version | The `_installed` archive shows the old version's footprint. New install proceeds normally; auto-numbering picks new SOP slots. |
