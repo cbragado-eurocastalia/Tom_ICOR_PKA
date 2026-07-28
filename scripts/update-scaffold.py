@@ -210,9 +210,11 @@ def build_plan(root, target, target_manifest_path):
             continue
 
         # --- Safety gate 3: never escape the scaffold root. ------------------
-        local_abs = os.path.normpath(os.path.join(root, rel))
-        if not local_abs.startswith(os.path.normpath(root) + os.sep) \
-                and local_abs != os.path.normpath(root):
+        # realpath, not normpath: normpath collapses ".." but follows symlinks,
+        # so a symlink planted at a framework path could redirect the write.
+        root_real = os.path.realpath(root)
+        local_abs = os.path.realpath(os.path.join(root, rel))
+        if not local_abs.startswith(root_real + os.sep) and local_abs != root_real:
             refused.append((rel, "would write outside the scaffold root"))
             continue
 

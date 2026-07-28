@@ -235,11 +235,30 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Releasing scaffold version $VERSION"
 
-      - name: Guard — VERSION file matches tag
+      - name: Guard — manifest.json SSOT + VERSION mirror match tag
         env:
           TAG_VERSION: ${{ steps.tag.outputs.version }}
         run: |
           set -euo pipefail
+
+          # manifest.json `scaffold_version` is the DECLARED single source of
+          # truth for the scaffold version; VERSION and .scaffold-version are
+          # mirrors of it. Guard the SSOT, not only the mirror: scripts/
+          # check-version.py reads manifest.json, so a drifted manifest.json
+          # would misreport every member's installed version and therefore
+          # their update state, while a VERSION-only guard stayed green.
+          if [ ! -f manifest.json ]; then
+            echo "::error::manifest.json is missing — cannot verify the declared version SSOT"; exit 1
+          fi
+          MV=$(python3 -c "import json; print(json.load(open('manifest.json')).get('scaffold_version') or '')")
+          if [ -z "$MV" ]; then
+            echo "::error::manifest.json has no scaffold_version — the declared version SSOT is unreadable"; exit 1
+          fi
+          if [ "$MV" != "$TAG_VERSION" ]; then
+            echo "::error::manifest.json scaffold_version ($MV) != tag version ($TAG_VERSION)"; exit 1
+          fi
+          echo "manifest.json scaffold_version matches tag."
+
           if [ -f VERSION ]; then
             FV=$(tr -d '[:space:]' < VERSION)
             if [ "$FV" != "$TAG_VERSION" ]; then
