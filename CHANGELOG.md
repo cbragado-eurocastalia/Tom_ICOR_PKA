@@ -2,6 +2,54 @@
 
 All notable changes to the myPKA scaffold are tracked here. Versions follow semver: MAJOR for breaking structural changes, MINOR for additions, PATCH for fixes.
 
+## [5.4.0] - 2026-07-28
+
+**Derivative readiness.** v5.3.0 made your own version of myPKA legal. This release makes it safe to actually build one, and gives the scaffold the two files a public project is expected to have: `DERIVATIVES.md` and `SECURITY.md`. Nothing moves, nothing breaks, and no action is required of you unless you are distributing a derivative.
+
+### Added
+
+- **`DERIVATIVES.md`** at the root: the general rules for building and distributing your own version of the scaffold. It is written as rules that apply to everyone identically, not as permission granted case by case, and it covers the five places a derivative goes wrong quietly:
+
+  1. **The version seam, which is the one that cannot be undone.** Derive from a fresh copy of **v5.3.0 or later**. Releases before v5.3.0 were CC BY-NC-SA 4.0, and an adaptation of one must carry a licence with the same licence elements under CC BY-NC-SA 4.0 § 3(b)(1). Creative Commons has designated **no compatible licences for CC BY-NC-SA 4.0**, so there is no exit: a derivative built on an older copy is locked to NonCommercial permanently, and so is everything distributed from it.
+  2. **The Cockpit comes out.** `Expansions/mypka-cockpit/` is not under Creative Commons and must be deleted from any distributed derivative. This is general, and there are no per-project carve-outs.
+  3. **What is outside the scaffold licence entirely:** the trademarks, and the ICOR® methodology and myICOR member content, which are governed by the myICOR Terms of Use and were never CC-licensed. Teaching the ideas in your own words is fine and always was; reproducing the expression is not.
+  4. **The platform-terms trap.** A course platform's standard "do not copy, do not share" clause sitting over CC BY-SA files is an additional restriction under § 2(a)(5)(B) and terminates the licence automatically under § 6(a), with a 30-day cure under § 6(b)(1). A plain login wall is fine. It is the clause that breaches, not the wall.
+  5. **The update check must be re-pointed or turned off.** See below.
+
+- **`SECURITY.md`** at the root. The scaffold had no security policy. It now states supported versions, a private reporting channel (GitHub private vulnerability reporting, or `support@myicor.com` with SECURITY in the subject), acknowledgement and disclosure timelines, what is in and out of scope, exactly what the scaffold does over the network, the standing release-blocking distribution rules (bring-your-own-key, secrets by reference, release integrity), and a safe-harbour statement for good-faith research.
+
+- **`manifest.json` gains a `distribution` block** recording who published this copy: `id`, `publisher`, `is_official_myicor_release`, and `derived_from`. Anyone distributing a derivative sets their own values there. It carries no telemetry and is never transmitted.
+
+### Fixed
+
+- **`update_check` no longer silently points every derivative at our release.** A derivative that shipped `manifest.json` untouched told all of its users, on every boot, that a "myPKA update" was available, aimed at the myICOR repository rather than the derivative's own. A user who followed that prompt had our framework files written over the derivative's renamed team and material. `update_check` now carries an explicit `upstream_repo` and a `derivative_rule` stating the obligation in the manifest itself, and the disclosure text names the upstream repository so the prompt is self-identifying. `DERIVATIVES.md` § 6 states the one-line fix: set `enabled` to `false`, or re-point at your own `VERSION`.
+
+- **Cockpit version drift in the manifest.** `expansions.items[mypka-cockpit].expansion_yaml_version` read `1.2.1` against a shipped Cockpit of `1.5.1`. Because the updater compares that declared value to decide whether an installed Expansion is behind, the stale entry produced a wrong "your cockpit is behind" notice in both directions. Corrected to `1.5.1`.
+
+- **The `changes` block described the wrong release.** It still carried the 4.1.1 to 5.0.0 record. Rewritten for 5.4.0.
+
+- **New root documents now reach existing folders.** `DERIVATIVES.md` and `SECURITY.md` are on `framework_paths.globs` in the same release that introduces them. A root document that is not on that allow-list is never written by the updater, so it reaches fresh downloads only and silently misses everyone already running myPKA.
+
+### Changed
+
+- **The Expansion spec requires a `LICENSE` file at the pack root.** The `license:` field in `expansion.yaml` is a label, and a label is not a grant. Every Expansion must now carry a `LICENSE` at its folder root naming the same terms, with a `NOTICE` alongside it when the pack bundles third-party assets. `license: proprietary` still requires a `LICENSE` stating the proprietary terms. Release CI blocks a pack in this repository without one, and the install workstream surfaces a missing or mismatched licence before you grant trust.
+
+- **The Expansion spec states how official packs behave on a renamed derivative.** Official packs declare the canonical scaffold specialists in `requires_agents`, so they will refuse to install on a renamed team. That is correct behaviour rather than a bug. Renaming is fully permitted; myICOR does not maintain compatibility shims, alias maps, or per-derivative pack builds, and does not troubleshoot official-pack installs against a renamed team.
+
+- **Two false statements in the Expansion spec corrected.** It claimed the scaffold's `Expansions/` folder is "structurally empty by design" and that the repository ships "no Expansion code in this repo. Ever." Both stopped being true at 5.0.0, when the Cockpit became bundled, and fully so at the 2026-07-23 consolidation that moved the Cockpit source in-repo. The spec now describes what the folder actually contains.
+
+### Known issues
+
+- **Changes to `Expansions/docs/expansion-spec.md` do not reach existing folders.** The path matches the `Expansions/*/**` user-state glob, which the updater refuses by design and ahead of the framework allow-list, so the spec cannot be listed in `changes.paths` without failing the whole update closed. Fresh downloads and the public repository carry the current spec; existing folders keep the copy they have. The fix needs an exclusion mechanism in the path matcher rather than a manifest edit, and it is tracked separately rather than worked around here.
+
+- **Release tags are not signed.** Every v5.x tag is annotated but unsigned. The release ZIP is built deterministically and its sha256 is published, so integrity is verifiable; provenance is not. Under consideration.
+
+### Version files
+
+- `manifest.json` → `scaffold_version` `5.4.0` (authoritative SSOT), `from` `5.3.0`, `breaking: false`.
+- `VERSION` → `5.4.0` (mirror of the manifest).
+- `.scaffold-version` → `5.4.0` (mirror of the manifest).
+
 ## [5.3.0] - 2026-07-27
 
 **You may now use myPKA commercially.** The base scaffold moves from CC BY-NC-SA 4.0 to **CC BY-SA 4.0**. The NonCommercial term is removed. Consultants, coaches, agencies and teams may run myPKA on client work and inside a commercial operation, and that is an intended use rather than a tolerated one. No files move and no structure changes.

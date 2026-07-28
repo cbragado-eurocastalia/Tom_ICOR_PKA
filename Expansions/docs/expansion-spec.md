@@ -2,7 +2,10 @@
 
 This document is the public, **locked** contract for authoring a myPKA Expansion. If you are writing one, this is what you write to. If you are wondering what an Expansion is allowed to do, this is what defines it.
 
-Scaffold this spec ships with: **myPKA v1.7.0**.
+Schema v1 was locked at scaffold v1.7.0. Last amended at **scaffold v5.4.0**
+(2026-07-28): a pack-root `LICENSE` file is now required, `requires_agents`
+behaviour on renamed derivatives is stated, and two claims about the scaffold
+shipping no Expansion code were corrected. The schema itself is unchanged.
 
 > **Vocabulary.** v1.5/1.6 called these "Extensions." v1.7 renames the architecture to **Expansions** end-to-end (folder `Expansions/`, manifest `expansion.yaml`, adapter doc `ADAPT-EXPANSION.md`). The technical contract is otherwise unchanged from v1.5/1.6 except for the schema additions documented below.
 
@@ -17,7 +20,7 @@ Two important framing notes:
 1. **Expansions are how the team grows.** This is the user-facing thesis: "install a pack, hire more specialists, stay non-blocking." Some Expansions add agents, some add connectors, some add runtimes — but the through-line is always "the team learns something new it can do."
 2. **Expansions are uninstallable.** `rm -rf` the folder (after running uninstall) and the scaffold is back to its prior shape. This is non-negotiable. No silent state writes outside `residual_paths`.
 
-The OSS scaffold's `Expansions/` folder is **structurally empty by design**. It ships with this spec, the README, and an empty INDEX.md template. Real Expansions live in their own private repos and ship as zips. Users drop them into their personal myPKA. None of that ever lands in this repo.
+**What the scaffold's `Expansions/` folder actually contains** (corrected at 5.4.0; earlier revisions of this spec said "structurally empty by design", which stopped being true at 5.0.0): this spec, the README, an `INDEX.md` template, the `.trusted-sources` pin file, and exactly one bundled Expansion, the free myPKA Cockpit at `mypka-cockpit/`, whose source lives in this repository since the 2026-07-23 consolidation. Everything else, including the official Expansion Packs, lives outside this repository, ships as a zip, and is dropped into the user's own `Expansions/` folder.
 
 ---
 
@@ -47,7 +50,7 @@ Every Expansion folder MUST contain an `expansion.yaml` at its root. Larry parse
 | `category` | string | Free-text tag for the AI Library (e.g., `agents`, `connector`, `productivity`). |
 | `expansion_type` | enum | `agent_pack` \| `connector` \| `runtime` \| `hybrid` |
 | `requires_agents` | list | Pre-hired agents this Expansion uses (e.g., `[Larry, Mack]`). Larry blocks install if any are missing. |
-| `license` | string | SPDX identifier or short string (`proprietary`, `MIT`, `CC-BY-SA-4.0`, …). |
+| `license` | string | SPDX identifier or short string (`proprietary`, `MIT`, `CC-BY-SA-4.0`, …). **The declared value MUST match the `LICENSE` file at the pack root** (see "A `LICENSE` file at the pack root is required" below). |
 | `author` | string | Who shipped this Expansion. |
 
 ### Conditional / optional fields
@@ -209,10 +212,59 @@ post_install_validation:
 
 ---
 
+## A `LICENSE` file at the pack root is REQUIRED (added 5.4.0)
+
+Every Expansion MUST carry a `LICENSE` file at its folder root, and the `license:`
+field in `expansion.yaml` MUST name the same terms.
+
+The `license:` field is a label. A label is not a grant. A pack whose manifest says
+`MIT` with no `LICENSE` file has given the person installing it a description of a
+licence rather than a licence, which leaves both sides guessing about what was
+actually permitted. That is the gap this rule closes.
+
+| Rule | Detail |
+|---|---|
+| **File** | `LICENSE` (no extension) at the pack root, next to `expansion.yaml`. `LICENSE.md` and `LICENSE.txt` are accepted. |
+| **Content** | The full licence text, or, for a Creative Commons licence, the canonical summary plus the URI to the legal code. A bare licence name is not sufficient. |
+| **Agreement** | `expansion.yaml` `license:` must name the same licence as the `LICENSE` file. Where they differ, the `LICENSE` file wins, and the mismatch is a defect in the pack. |
+| **Proprietary packs** | `license: proprietary` is still a valid value. It still requires a `LICENSE` file stating the proprietary terms and who to contact. "Proprietary" is not an excuse to ship nothing. |
+| **Bundled third-party assets** | Fonts, icons, libraries and other bundled assets under their own terms are listed in a `NOTICE` file at the pack root, alongside the `LICENSE`. |
+| **Enforcement** | Release CI blocks any pack in this repository that has an `expansion.yaml` without a matching pack-root `LICENSE`. The install workstream ([[WS-003-install-an-expansion]]) surfaces a missing `LICENSE` to the user before they grant trust. |
+
+The bundled Cockpit is the worked example: `Expansions/mypka-cockpit/` carries
+`LICENSE` and `NOTICE` at its root, and its `expansion.yaml` declares
+`license: PolyForm-Noncommercial-1.0.0` to match.
+
+---
+
+## Official packs target the canonical agent names (added 5.4.0)
+
+`requires_agents` names the pre-hired specialists a pack depends on. Official
+myICOR-issued packs name the **canonical scaffold specialists** (Larry, Nolan,
+Pax, Penn, Mack, Silas). The install workstream blocks the install when a named
+agent is not present in `Team/agent-index.md`.
+
+**Consequence, stated so nobody has to discover it:** official Expansion Packs are
+**not supported on a renamed derivative of the scaffold**. Renaming the team is
+fully permitted under CC BY-SA 4.0 and is encouraged for anyone shipping their own
+version (see `DERIVATIVES.md`), but a renamed team will fail the `requires_agents`
+check, and that is correct behaviour rather than a bug.
+
+myICOR does not maintain compatibility shims, alias maps, or per-derivative pack
+builds, and does not troubleshoot official-pack installs against a renamed team.
+An author distributing a derivative owns their own pack story.
+
+The same applies in reverse to third-party packs: name the agents your pack
+actually needs, in the naming of the scaffold you support, and say which that is
+in your README.
+
+---
+
 ## Conventions
 
 - **Folder name = `slug`.** No exceptions.
 - **Trinity files at root:** `expansion.yaml`, `README.md`, `ADAPT-EXPANSION.md`. The `ADAPT-EXPANSION.md` is the LLM-facing operating manual (what to do when this Expansion is invoked).
+- **`LICENSE` at root: required.** See the section above. `NOTICE` alongside it when the pack bundles third-party assets.
 - **Token files never committed.** `.env.example` is committed; `.env` is gitignored and chmod 600 by the install script.
 - **SOPs ship as files in the Expansion folder, not pre-numbered.** The install workstream auto-numbers them into the your myPKA. Filename inside the Expansion is descriptive (`SOP-notion-fetch.md`); the installer renames to the next free `SOP-NNN-…` slot.
 - **Agent folder names follow `<Name> - <Role>`** to match scaffold convention.
@@ -278,7 +330,8 @@ Symmetric to install. The uninstall flow ([[WS-003-install-an-expansion]] §unin
 The install workstream refuses to proceed when:
 
 - A required field is missing or malformed → `invalid` row in `INDEX.md`, install blocked.
-- A required pre-hired agent listed in `requires_agents` is not in `Team/agent-index.md` → install blocked with a "install X first" message.
+- A required pre-hired agent listed in `requires_agents` is not in `Team/agent-index.md` → install blocked with a "install X first" message. On a renamed derivative of the scaffold this is the expected outcome for official packs; see "Official packs target the canonical agent names" above.
+- No `LICENSE` file at the pack root, or a `LICENSE` that names different terms from the `license:` field → surfaced to the user before trust is granted, so nobody installs a pack whose terms are unstated. Required since 5.4.0.
 
 Larry never silently coerces.
 
@@ -294,6 +347,9 @@ Before zipping your Expansion and shipping it:
 - `expansion.yaml` validates against the schema above.
 - All required fields present.
 - `license` declared; SPDX where possible.
+- **`LICENSE` file present at the pack root, and it names the same licence as the `license:` field.** Required since 5.4.0; release CI blocks a pack without it.
+- `NOTICE` at the pack root if the pack bundles third-party assets under their own terms.
+- `requires_agents` names the agents in the naming of the scaffold you support, and your README says which scaffold that is.
 - Tested against the scaffold version(s) you support (there is no install-time version gate — testing is on you).
 - `env_vars` match what the runtime/connector actually reads.
 - `adds_sops` files exist in the Expansion folder and are LLM-agnostic.
@@ -306,10 +362,11 @@ Before zipping your Expansion and shipping it:
 
 ---
 
-## What the OSS scaffold does NOT ship
+## What the scaffold does NOT ship (corrected at 5.4.0)
 
-- No Expansion code in this repo. Ever.
-- No Expansion binaries.
-- No Expansion manifests beyond the empty `INDEX.md` template.
+- **No Expansion binaries or build artifacts.** The bundled Cockpit ships as source-shape; members build it on install. Release CI fails if a build artifact is git-tracked.
+- **No third-party Expansion code.** The only in-repo Expansion is the myPKA Cockpit, published by myICOR.
+- **No official Expansion Packs.** The Designer Pack and the App Developer Pack left this repository at 5.0.0 and are part of the myICOR membership.
+- **No secrets.** `.env` is gitignored at any depth; only `.env.example` is committed.
 
-Expansions live in their own private repos. The OSS scaffold ships only this spec, the contract, and Larry's discovery routine + WS-003 install workstream.
+Everything else lives in its own repository, ships as a zip, and is dropped into the user's `Expansions/` folder. The scaffold ships this spec, the contract, the trust pins, Larry's discovery routine, and the WS-003 install workstream.
