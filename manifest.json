@@ -111,6 +111,11 @@
         "note": "scaffold_version 5.3.0 -> 5.4.0; new distribution block (provenance: id, publisher, is_official_myicor_release, derived_from); DERIVATIVES.md and SECURITY.md added to framework_paths.globs so they reach existing folders and not only fresh downloads; cockpit expansion_yaml_version corrected 1.2.1 -> 1.5.2; update_check gains upstream_repo and derivative_rule, and the disclosure names the upstream repository."
       },
       {
+        "path": "scripts/update-scaffold.py",
+        "change_type": "changed",
+        "note": "Root-containment guard now resolves symlinks on BOTH sides (realpath of the root and of the candidate path) instead of normpath, which collapses '..' but follows symlinks. Listed here so the hardened guard reaches existing folders and not only fresh downloads: a security fix to the updater that the updater does not deliver is the propagation trap this release exists to close. Resolving both sides is what keeps it from over-refusing; resolving only the candidate would deny every update to members on macOS /tmp or a symlinked home."
+      },
+      {
         "path": "Expansions/.trusted-sources",
         "change_type": "changed",
         "note": "Adds the mypka-cockpit@1.5.2 pin. Listed here so existing folders receive it on update; without the new pin an installed cockpit 1.5.2 would not match any trusted hash. The 1.5.1 pin is retained and unchanged, so correctly-installed 1.5.1 cockpits keep verifying."

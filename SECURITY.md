@@ -105,10 +105,16 @@ sits next to it. Set `update_check.enabled` to `false` to turn it off.
 
 `scripts/update-scaffold.py` makes **no** network call at all. It works on an
 update bundle already on your disk, is dry-run by default, and fails closed: it
-refuses any path outside the `framework_paths` allow-list, refuses any path
-inside `user_state_paths` even if an update bundle asks for it, refuses to write
-outside the scaffold root, and backs up any framework file you have locally
-modified before overwriting it.
+refuses any path outside the `framework_paths` allow-list, refuses any path an
+update bundle declares inside `user_state_paths`, refuses to write outside the
+scaffold root, and backs up any framework file you have locally modified before
+overwriting it.
+
+The word "declares" in that second guarantee is deliberate: the allow-list and
+user-state checks are applied to the path the bundle asks for, while root
+containment is applied to the path the write actually lands on. Tightening the
+user-state check the same way is the first item in 5.4.1, tracked in the open
+under "Known issues" in `CHANGELOG.md`.
 
 Nothing else in the scaffold core reaches the network.
 
