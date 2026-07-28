@@ -10,8 +10,10 @@ this page follows from it.
 | Version | Supported |
 |---|---|
 | 5.4.x | Yes. Current release line. |
-| 5.0.x to 5.3.x | Security fixes only, on the next 5.4.x release. |
-| < 5.0.0 | Not supported. Update to the current line. |
+| < 5.4.0 | Not supported. Security fixes ship on the current line only; update to receive them. |
+
+If you report something against an older version, we will tell you whether it
+affects the version you are on.
 
 Security fixes land on the current minor line. `manifest.json` `scaffold_version`
 is the single source of truth for what you are running; `VERSION` and
@@ -21,20 +23,30 @@ is the single source of truth for what you are running; `VERSION` and
 
 **Report privately. Do not open a public issue for an unfixed vulnerability.**
 
-- **Preferred:** GitHub private vulnerability reporting on this repository
-  (Security tab, "Report a vulnerability").
-- **Email:** `support@myicor.com`, marked SECURITY in the subject line.
+Use **GitHub private vulnerability reporting** on this repository: the Security
+tab, then "Report a vulnerability". It is private between you and the
+maintainers, and it is the only channel we monitor for security reports.
 
 Please include the affected version (from `manifest.json`), what you observed,
 how to reproduce it, and the impact you think it has. A proof of concept helps
 and is not required.
 
-**What to expect.** We acknowledge within 5 working days and give you an initial
-assessment within 10. Coordinated disclosure is the default: we agree a fix
-timeline with you, ship the fix, and credit you in the release notes if you want
-credit. Please give us a reasonable window before public disclosure. Our target
-is 90 days from your report, shorter when the fix is simple, and we will tell you
-if something is going to take longer rather than going quiet.
+Do not send vulnerability reports to our general support address. It is a
+product-support channel, it is not access-controlled for security material, and
+it is not monitored for security reports.
+
+**What to expect.** We are a small team, so here is the honest version. We aim to
+acknowledge a report within 5 working days and to give you an initial assessment
+within 10. These are targets we work to, not a contractual response time, and we
+would rather state them plainly than publish a guarantee we cannot staff around
+the clock. If you have not heard from us after 10 working days, send a follow-up
+on the same report thread and treat that as a nudge rather than a closed door.
+
+Coordinated disclosure is the default: we agree a fix timeline with you, ship the
+fix, and credit you in the release notes if you want credit. Please give us a
+reasonable window before public disclosure. Our target is 90 days from your
+report, shorter when the fix is simple, and we will tell you if something is
+going to take longer rather than going quiet.
 
 We do not run a paid bug bounty.
 
@@ -49,7 +61,7 @@ We do not run a paid bug bounty.
   `user_state_paths`, is a vulnerability and we want to hear about it.
 - The bundled myPKA Cockpit at `Expansions/mypka-cockpit/`. It has its own, more
   detailed policy at `Expansions/mypka-cockpit/SECURITY.md`; report Cockpit
-  issues through the same channels above.
+  issues through the same channel above.
 - Anything in a published release artifact that should not be there: a credential,
   a private path, a key of any kind.
 
@@ -64,6 +76,21 @@ We do not run a paid bug bounty.
 - Your LLM provider, your LLM tool, and your operating system.
 - Prompt injection against your own LLM through content you deliberately imported.
   Treat imported content as untrusted, the same as you would in any other tool.
+- Derivative scaffolds distributed by other people. `DERIVATIVES.md` permits them
+  and they inherit this file by default. Report issues in a derivative to whoever
+  distributes it. We can only fix what ships from this repository.
+- Instructions carried by third-party Expansions. An Expansion's `AGENTS.md` and
+  its prose are instructions your assistant will follow, and that is the same
+  "someone else's code you chose to run" boundary as above. Injection through the
+  scaffold's OWN shipped markdown is in scope and we want to hear about it.
+- The derived `mypka.db` mirror and any local embedding store. They are generated
+  from your own markdown, they live only on your machine, and they are
+  regenerable. Markdown is canonical.
+- Automated scanner output with no demonstrated impact, missing security headers,
+  denial of service and volumetric testing, and social engineering of the team or
+  our support channels.
+- The myICOR web application and its infrastructure. Different asset, different
+  policy; use the contact address below and we will route it.
 
 ## What the scaffold does over the network
 
@@ -122,8 +149,12 @@ or pack built on it. A release that breaks one of these does not ship.
 - CI holds no service-role key and no database credential. The release pipeline
   talks to a single edge function with a shared secret and uploads through
   short-lived signed URLs.
-- Official Expansions are hash-pinned in `Expansions/.trusted-sources`. A hash
-  mismatch blocks the install.
+- Official Expansions are hash-pinned in `Expansions/.trusted-sources`, and release
+  CI blocks a release whose bundled Expansion does not match its pin. The
+  install-time check that compares an Expansion's manifest hash against those pins
+  is carried out by the install workstream, which your assistant executes; it is an
+  assistant-enforced gate, not a compiled one. Treat it as a strong default rather
+  than a sandbox.
 
 ## If you are distributing your own version
 
@@ -143,7 +174,13 @@ privacy violations and service disruption, give us reasonable time to fix what y
 find, and do not exfiltrate or destroy data, we will not pursue legal action
 against you and we will treat your report as authorised.
 
+This applies to your own installation and to this repository's code. It does not
+authorise testing against third-party services (your LLM provider, GitHub, or the
+myICOR web application), and we cannot waive anyone else's rights on their behalf.
+If you go outside these bounds, the safe harbour does not apply to that activity.
+
 ---
 
-Security reports: `support@myicor.com` (subject line SECURITY), or the GitHub
-Security tab. Everything else, including trademark and licensing: `contact@myicor.com`.
+Security reports: GitHub private vulnerability reporting (this repository,
+Security tab). Everything else, including trademark and licensing:
+`contact@myicor.com`.

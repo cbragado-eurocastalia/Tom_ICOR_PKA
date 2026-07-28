@@ -75,7 +75,7 @@
       {
         "slug": "mypka-cockpit",
         "name": "myPKA Cockpit",
-        "expansion_yaml_version": "1.5.1",
+        "expansion_yaml_version": "1.5.2",
         "updater": "Expansions/mypka-cockpit/scripts/UPDATE-COCKPIT.md",
         "update_policy": "defer-to-expansion",
         "note": "Runtime Expansion, bundled and free. Has source code, an npm build, and its own SQLite migration lifecycle. The scaffold updater must NOT swap cockpit code. If the cockpit is behind its latest release, the scaffold updater only prints a notice and points the member at the cockpit updater."
@@ -89,11 +89,11 @@
     "remote_version_url": "https://raw.githubusercontent.com/myICOR/myPKA/main/VERSION",
     "sends_user_data": false,
     "fail_silent_offline": true,
-    "derivative_rule": "MANDATORY for anyone redistributing a derivative of this scaffold (permitted under CC BY-SA 4.0, see DERIVATIVES.md section 6): either set enabled to false, or re-point upstream_repo and remote_version_url at your own release. A derivative that ships this block untouched tells every one of its users, on every boot, that a myPKA update is available, aimed at the myICOR release rather than the derivative's own. A user who follows that prompt has the upstream framework files written over the derivative's renamed team and material. upstream_repo and remote_version_url must agree with each other and with distribution.id; CI enforces that agreement on the official release.",
+    "derivative_rule": "MANDATORY for anyone redistributing a derivative of this scaffold (permitted under CC BY-SA 4.0, see DERIVATIVES.md section 6): either set enabled to false, or re-point upstream_repo and remote_version_url at your own release. A derivative that ships this block untouched tells every one of its users, on every boot, that a myPKA update is available, aimed at the myICOR release rather than the derivative's own. A user who follows that prompt has the upstream framework files written over the derivative's renamed team and material. upstream_repo and remote_version_url must agree with each other and with distribution.id. A CI check to enforce that agreement on the official release is specified and not yet wired; until it is, the agreement is checked in review.",
     "disclosure": "On boot, myPKA fetches one version string from the official myPKA repository (myICOR/myPKA) to tell you if an update exists. That request sends no data about you or your vault. It is read-only and fails silently if you are offline. Set update_check.enabled to false to turn it off."
   },
   "changes": {
-    "_about": "Per-path change record for THIS release (5.3.0 -> 5.4.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.4.0: derivative readiness. v5.3.0 made derivatives legal (CC BY-SA 4.0); 5.4.0 makes them safe to actually build. New DERIVATIVES.md states the general rules for building and distributing your own version, including the one that cannot be undone (derive from v5.3.0 or later, because a fork of a pre-v5.3.0 copy is locked to NonCommercial permanently). New SECURITY.md gives the scaffold a private vulnerability-reporting path. New distribution block records who published this copy. update_check gains an explicit derivative rule and names the upstream repository in its disclosure. Version drift repaired: the cockpit's declared expansion_yaml_version was stale at 1.2.1 against a shipped 1.5.1. IMPORTANT: this changes-paths list is deliberately limited to paths on the framework_paths allow-list. Expansions/docs/expansion-spec.md also changed in this release but is NOT listed, because it matches the user_state glob Expansions/*/** and the updater fails closed on any refused path. That propagation gap is tracked, not worked around.",
+    "_about": "Per-path change record for THIS release (5.3.0 -> 5.4.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.4.0: derivative readiness. v5.3.0 made derivatives legal (CC BY-SA 4.0); 5.4.0 makes them safe to actually build. New DERIVATIVES.md states the general rules for building and distributing your own version, including the one that cannot be undone (derive from v5.3.0 or later, because a fork of a pre-v5.3.0 copy is locked to NonCommercial permanently). New SECURITY.md gives the scaffold a private vulnerability-reporting path. New distribution block records who published this copy. update_check gains an explicit derivative rule and names the upstream repository in its disclosure. Version drift repaired: the cockpit's declared expansion_yaml_version was stale at 1.2.1 and now reads 1.5.2, the cockpit released alongside this scaffold. IMPORTANT: this changes-paths list is deliberately limited to paths on the framework_paths allow-list. Expansions/docs/expansion-spec.md also changed in this release but is NOT listed, because it matches the user_state glob Expansions/*/** and the updater fails closed on any refused path. That is correct behaviour of a real safety gate rather than a bug: Expansions/*/** is where a member's installed Expansion state lives. The spec is an authoring contract that binds pack authors at authoring time, which is a fetch-fresh moment, so non-reach carries no consequence for members. The compliance-relevant content is in LICENSE-MAP.md and DERIVATIVES.md, both root files, both listed here.",
     "paths": [
       {
         "path": "DERIVATIVES.md",
@@ -108,7 +108,12 @@
       {
         "path": "manifest.json",
         "change_type": "changed",
-        "note": "scaffold_version 5.3.0 -> 5.4.0; new distribution block (provenance: id, publisher, is_official_myicor_release, derived_from); DERIVATIVES.md and SECURITY.md added to framework_paths.globs so they reach existing folders and not only fresh downloads; cockpit expansion_yaml_version corrected 1.2.1 -> 1.5.1; update_check gains upstream_repo and derivative_rule, and the disclosure names the upstream repository."
+        "note": "scaffold_version 5.3.0 -> 5.4.0; new distribution block (provenance: id, publisher, is_official_myicor_release, derived_from); DERIVATIVES.md and SECURITY.md added to framework_paths.globs so they reach existing folders and not only fresh downloads; cockpit expansion_yaml_version corrected 1.2.1 -> 1.5.2; update_check gains upstream_repo and derivative_rule, and the disclosure names the upstream repository."
+      },
+      {
+        "path": "Expansions/.trusted-sources",
+        "change_type": "changed",
+        "note": "Adds the mypka-cockpit@1.5.2 pin. Listed here so existing folders receive it on update; without the new pin an installed cockpit 1.5.2 would not match any trusted hash. The 1.5.1 pin is retained and unchanged, so correctly-installed 1.5.1 cockpits keep verifying."
       },
       {
         "path": "VERSION",

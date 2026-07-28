@@ -10,7 +10,9 @@ stuck. Everything below is a general rule. It applies to everyone equally, and
 nothing on this page is granted or withheld case by case.
 
 Read this alongside `LICENSE`, `LICENSE-MAP.md`, `NOTICE.md`, and `TRADEMARK.md`.
-Where this page and a `LICENSE` differ, the `LICENSE` wins.
+Where this page and any licence file differ, the licence file wins. The Cockpit
+and the myICOR member content sit under their own instruments, named in sections
+3 and 4, and those govern their own subjects.
 
 ---
 
@@ -85,7 +87,7 @@ of them are cheap.
    statement about your own work, and it misleads everyone downstream about which
    terms they actually hold.
 
-6. **Impose no additional restrictions.** Section 2(a)(5)(B) and Section 3(b)(3).
+6. **Impose no additional restrictions.** Section 2(a)(5)(C) and Section 3(b)(3).
    See section 5 below, because this is the one people breach by accident.
 
 **A note on renaming.** You may rename every agent, rewrite every SOP, Guideline
@@ -111,10 +113,12 @@ That is not a restriction we add to derivatives. It is a different licence on a
 different subtree, and `LICENSE-MAP.md` has always said so. The CC BY-SA grant
 never reached it.
 
-This rule is general and has no exceptions. We do not grant Cockpit carve-outs to
-individual projects, programmes, or people. Anyone who wants the Cockpit takes it
-themselves, from us, under its own terms. If you are teaching or supporting
-others, point them at the source rather than bundling it.
+This rule is general. We do not grant Cockpit carve-outs to individual projects,
+programmes, or people, and asking for one will get you this paragraph. Anyone who
+wants the Cockpit takes it themselves, from us, under its own terms. If the
+Cockpit ever carries commercial terms, they will be published terms open to
+everyone on the same basis, never a private arrangement with anyone. If you are
+teaching or supporting others, point them at the source rather than bundling it.
 
 Everything else in `Expansions/` at v5.3.0 and later is documentation. The
 official Expansion Packs are not part of this repository, so a clean fork will not
@@ -147,8 +151,12 @@ prohibit reselling, sublicensing, redistributing, or publicly sharing them.
 
 The line is ideas versus expression. Copyright does not protect a method or a
 system, so teaching the concepts in your own words is fine and always was.
-Reproducing our expression is not. If you are a myICOR member, holding a CC BY-SA
-licence on the scaffold gives you no cover on the member content.
+Reproducing our expression is not. Two riders. If you are a myICOR member,
+holding a CC BY-SA licence on the scaffold gives you no cover on the member
+content. And the Terms of Use are a contract, so they can reach further than
+copyright does: what they reach is our material, not your understanding of it,
+and they keep applying to you as a member whatever licence you hold on the
+scaffold.
 
 **Other people's assets that we merely bundle.** The weekly-report deck ships four
 webfonts under the SIL Open Font License 1.1. If you ship those assets, keep
@@ -162,19 +170,23 @@ binaries only and changes nothing about the scaffold licence.
 This is the likeliest accidental breach in an otherwise clean derivative, and
 almost nobody sees it coming.
 
-CC BY-SA 4.0 Section 2(a)(5)(B) says you may not offer or impose additional or
+CC BY-SA 4.0 Section 2(a)(5)(C) says you may not offer or impose additional or
 different terms on the licensed material if doing so restricts your recipients
 from exercising their licensed rights. Section 3(b)(3) repeats it for adapted
 material. Under Section 6(a) your licence terminates **automatically** if you
-breach it, with a 30-day cure window under Section 6(b)(1) if you fix it promptly
-once you notice.
+breach it. Section 6(b)(1) reinstates it as of the date you cure the breach,
+provided you cure within 30 days of discovering it, and those 30 days run from
+your own discovery rather than from any notice by us. Reinstatement restores the
+licence going forward; Section 6(b) says expressly that it does not affect any
+remedy we may have for the period of the breach.
 
 Course platforms, membership sites, and private repositories behind a member
 agreement almost all ship default terms of the form "these materials are for your
 personal use, do not copy, do not share, do not redistribute". The moment your
 CC BY-SA derivative sits inside terms that say that, you have imposed an
-additional restriction on your recipients, and the licence you are relying on
-starts terminating.
+additional restriction on your recipients, and your own licence to the material
+terminates automatically. It does not lapse gradually, and it does not wait for
+us to notice.
 
 The distinction is sharp:
 
@@ -197,10 +209,11 @@ Two lines of mitigation, both cheap:
 ## 6. Re-point or turn off the update check
 
 **If you distribute a derivative, you must either set
-`update_check.enabled` to `false` in `manifest.json`, or re-point
-`update_check.remote_version_url` at your own `VERSION` file.**
+`update_check.enabled` to `false` in `manifest.json`, or re-point both
+`update_check.upstream_repo` and `update_check.remote_version_url` at your own
+release.** The two must agree with each other and with `distribution.id`.
 
-This is the one hard technical condition, and it is one line.
+This is the one hard technical condition, and it is a two-line edit.
 
 `manifest.json` ships the boot-time update check enabled, pointed at the official
 myPKA `VERSION` file. On a derivative that leaves it untouched, every one of your
@@ -250,9 +263,13 @@ Stated plainly, because people keep offering:
   your product, or your changes.
 - **No separate licence.** The published licence is the whole grant. There is
   nothing extra to negotiate and asking will get you this page.
-- **No case-by-case permissions.** We do not issue bespoke grants, exceptions, or
-  carve-outs to individuals. Everything anyone is allowed to do is written down
-  here and in the licence files, identically for everyone.
+- **No case-by-case permissions under the scaffold licence.** We do not issue
+  bespoke grants, private exceptions, or individual carve-outs to what CC BY-SA
+  4.0 already gives you. Everything anyone may do with the scaffold is written
+  down here and in the licence files, identically for everyone. Trademark
+  permission, OEM licensing, and branded redistribution are separate instruments
+  rather than exceptions to this one, and they are answered on published terms
+  rather than as personal favours. They are the address at the foot of this page.
 - **No partnership, certification, or affiliation.** Not on offer, and claiming one
   is a trademark problem rather than a licence problem. See `TRADEMARK.md`.
 
@@ -286,6 +303,8 @@ Before you publish a derivative:
 Questions this page does not answer, plus trademark permission, OEM licensing, and
 branded redistribution: **contact@myicor.com**.
 
-This is compliance analysis (Einschätzung im Sinne des § 6 RDG), not legal advice
-(keine Rechtsberatung). For binding legal opinions, consult a licensed Fachanwalt
-in the relevant jurisdiction.
+This page is a plain-language summary of our own licence terms, written to be
+useful rather than exhaustive. It is not legal advice. Where it differs from
+`LICENSE`, `LICENSE-MAP.md`, `NOTICE.md`, `TRADEMARK.md`, the myICOR Terms of
+Use, or the licence file of a subtree, those documents win. If your situation
+turns on the detail, take the licence text to your own lawyer.

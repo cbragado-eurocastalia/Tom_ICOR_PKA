@@ -53,6 +53,7 @@ mypka-cockpit@1.4.0 sha256=d877c41da0c641e704d22a6ae65d8cdae4457d7d2000cb6e53e76
 mypka-cockpit@1.4.1 sha256=2ac6ec6fd7d40694101a2455ef38c2a92af49ebe16bfece6654e6b153f00ae5a
 mypka-cockpit@1.5.0 sha256=cde4c231941d6931bbb06644e24ce568ef5e622e7c58e2a08321562b99839eab
 mypka-cockpit@1.5.1 sha256=8bfff385e972cbd497b1a1e28a10030876abe353641e4d4ee5852bd8da772c34
+mypka-cockpit@1.5.2 sha256=c2baccaee8b36ba79157a3e8ee8a4907618f2da232a6f796f3e3642c4a764c1d
 
 # --- WITHDRAWN (no longer offered or supported by myICOR) ---------------------
 #     A withdrawn pack's pins are dropped from this mirror and its slug is

@@ -233,7 +233,12 @@ actually permitted. That is the gap this rule closes.
 
 The bundled Cockpit is the worked example: `Expansions/mypka-cockpit/` carries
 `LICENSE` and `NOTICE` at its root, and its `expansion.yaml` declares
-`license: PolyForm-Noncommercial-1.0.0` to match.
+`license: LicenseRef-myICOR-Cockpit-Personal-Use-1.0`, which is the name of the
+licence in that file. The Cockpit licence is *based on* PolyForm Noncommercial
+1.0.0 but is not that licence: it adds attribution conditions and express
+disclaimers. Declaring the standard SPDX identifier would therefore be a
+mislabel, and `LicenseRef-` is the correct SPDX form for a licence that is not on
+the SPDX list. If your pack adapts a standard licence, do the same.
 
 ---
 

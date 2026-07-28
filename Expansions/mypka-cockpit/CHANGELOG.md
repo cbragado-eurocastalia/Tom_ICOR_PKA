@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The version in `expansion.yaml` is the single source of truth for a release; the
 root `package.json` and `package-lock.json` mirror it.
 
+## [1.5.2] - 2026-07-28
+
+**Licence-label correction. No code changes; the application is identical to 1.5.1.**
+
+### Fixed
+
+- **`expansion.yaml` no longer mislabels the licence.** It declared `license: PolyForm-Noncommercial-1.0.0`, which is a specific published licence text. The Cockpit is not under that licence: it is under the **myICOR Cockpit Personal-Use License v1.0**, which is *based on* PolyForm Noncommercial 1.0.0 and adds the Section 2 attribution conditions and the Sections 8 to 10 AS-IS, liability, and financial-data disclaimers that the standard text does not contain. `LICENSE` says so in its second paragraph and `LICENSE-MAP.md` has always described it correctly; `expansion.yaml` was the one place in the repository that did not.
+
+  The declared identifier is now `LicenseRef-myICOR-Cockpit-Personal-Use-1.0`, which is the correct SPDX form for a licence that is not on the SPDX list. Nothing about what you may do with the Cockpit has changed: it is free for personal, non-commercial use, exactly as before. What changes is that the label now names the terms that actually apply, so a reader cannot rely on the standard PolyForm text and conclude the added attribution conditions and disclaimers never bound them.
+
+- **Why this is a version bump rather than an edit in place.** The shipped `expansion.yaml` is hash-pinned in `Expansions/.trusted-sources`, and a pin is one hash for one version. Rewriting the 1.5.1 pin would have made every correctly-installed 1.5.1 Cockpit look tampered with. The 1.5.1 pin stays valid and untouched; 1.5.2 carries its own pin.
+
+### Known
+
+- `package-lock.json` and `web/package-lock.json` still carry `1.4.1` in their `version` fields. That drift predates this release (the 1.5.0 and 1.5.1 bumps did not update them) and no build or CI guard reads those fields. It is logged here rather than fixed silently in a licence-correction release.
+
 ## [1.4.1] - 2026-07-23
 
 **Docs-only patch on the consolidation train.** No code changes; the web app is identical to 1.4.0.
