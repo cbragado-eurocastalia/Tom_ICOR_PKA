@@ -32,7 +32,7 @@ All notable changes to the myPKA scaffold are tracked here. Versions follow semv
 
 ### Changed
 
-- **The Expansion spec requires a `LICENSE` file at the pack root.** The `license:` field in `expansion.yaml` is a label, and a label is not a grant. Every Expansion must now carry a `LICENSE` at its folder root naming the same terms, with a `NOTICE` alongside it when the pack bundles third-party assets. `license: proprietary` still requires a `LICENSE` stating the proprietary terms. Release CI blocks a pack in this repository without one, and the install workstream surfaces a missing or mismatched licence before you grant trust.
+- **The Expansion spec requires a `LICENSE` file at the pack root.** The `license:` field in `expansion.yaml` is a label, and a label is not a grant. Every Expansion must now carry a `LICENSE` at its folder root naming the same terms, with a `NOTICE` alongside it when the pack bundles third-party assets. `license: proprietary` still requires a `LICENSE` stating the proprietary terms. Two checks are specified to enforce this, one in release CI and one in the install workstream; neither is wired yet, so for now a pack without a `LICENSE` is a spec violation caught in review.
 
 - **The Expansion spec states how official packs behave on a renamed derivative.** Official packs declare the canonical scaffold specialists in `requires_agents`, so they will refuse to install on a renamed team. That is correct behaviour rather than a bug. Renaming is fully permitted; myICOR does not maintain compatibility shims, alias maps, or per-derivative pack builds, and does not troubleshoot official-pack installs against a renamed team.
 

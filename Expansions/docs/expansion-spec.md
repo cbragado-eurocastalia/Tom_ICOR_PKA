@@ -229,7 +229,7 @@ actually permitted. That is the gap this rule closes.
 | **Agreement** | `expansion.yaml` `license:` must name the same licence as the `LICENSE` file. Where they differ, the `LICENSE` file wins, and the mismatch is a defect in the pack. |
 | **Proprietary packs** | `license: proprietary` is still a valid value. It still requires a `LICENSE` file stating the proprietary terms and who to contact. "Proprietary" is not an excuse to ship nothing. |
 | **Bundled third-party assets** | Fonts, icons, libraries and other bundled assets under their own terms are listed in a `NOTICE` file at the pack root, alongside the `LICENSE`. |
-| **Enforcement** | Release CI blocks any pack in this repository that has an `expansion.yaml` without a matching pack-root `LICENSE`. The install workstream ([[WS-003-install-an-expansion]]) surfaces a missing `LICENSE` to the user before they grant trust. |
+| **Enforcement** | A hard requirement of the spec, not a recommendation. Two checks are specified to enforce it: a release-CI check that blocks any pack in this repository whose `expansion.yaml` has no matching pack-root `LICENSE`, and a check in the install workstream ([[WS-003-install-an-expansion]]) that surfaces a missing or mismatched licence before the user grants trust. Neither is wired yet. Until they are, a pack without a `LICENSE` is a spec violation caught in review. |
 
 The bundled Cockpit is the worked example: `Expansions/mypka-cockpit/` carries
 `LICENSE` and `NOTICE` at its root, and its `expansion.yaml` declares
@@ -331,7 +331,7 @@ The install workstream refuses to proceed when:
 
 - A required field is missing or malformed → `invalid` row in `INDEX.md`, install blocked.
 - A required pre-hired agent listed in `requires_agents` is not in `Team/agent-index.md` → install blocked with a "install X first" message. On a renamed derivative of the scaffold this is the expected outcome for official packs; see "Official packs target the canonical agent names" above.
-- No `LICENSE` file at the pack root, or a `LICENSE` that names different terms from the `license:` field → surfaced to the user before trust is granted, so nobody installs a pack whose terms are unstated. Required since 5.4.0.
+- No `LICENSE` file at the pack root, or a `LICENSE` that names different terms from the `license:` field → a spec violation since 5.4.0. The install-workstream check that surfaces it to the user before trust is granted is specified and not yet wired; until it is, this is caught in review rather than at install time.
 
 Larry never silently coerces.
 
@@ -347,7 +347,7 @@ Before zipping your Expansion and shipping it:
 - `expansion.yaml` validates against the schema above.
 - All required fields present.
 - `license` declared; SPDX where possible.
-- **`LICENSE` file present at the pack root, and it names the same licence as the `license:` field.** Required since 5.4.0; release CI blocks a pack without it.
+- **`LICENSE` file present at the pack root, and it names the same licence as the `license:` field.** Required since 5.4.0.
 - `NOTICE` at the pack root if the pack bundles third-party assets under their own terms.
 - `requires_agents` names the agents in the naming of the scaffold you support, and your README says which scaffold that is.
 - Tested against the scaffold version(s) you support (there is no install-time version gate — testing is on you).
