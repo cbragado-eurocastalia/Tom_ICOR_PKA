@@ -31,7 +31,8 @@ All notable changes to the myPKA scaffold are tracked here. Versions follow semv
 
 ### Removed
 
-- **Releases v3.0.0 through v5.4.0 are withdrawn** and their download assets deleted, because every one of them shipped the content described above. Update to 5.5.0.
+- **The scaffold ZIP no longer contains `.github/`.** That folder is repository infrastructure for `myICOR/myPKA` itself, not scaffold content, and it was already outside the declared contract: it appears in neither `framework_paths` nor `user_state_paths` in `manifest.json`, so the updater never managed it. Shipping it also put our own Supabase project URL, edge-function name and CI secret names into every member's folder, and handed anyone building a derivative a release pipeline aimed at our infrastructure rather than theirs. A new `.gitattributes` marks it `export-ignore`. Nothing you rely on is affected; if you have a `.github/` folder from an earlier version, the updater will leave it alone, and you can delete it.
+- **Every previous release is withdrawn**, all twenty of them, and their download assets are deleted. The v5 line shipped the health content described above; the v1 and v2 lines carried the author's name but no health content. Update to 5.5.0.
 
 ---
 

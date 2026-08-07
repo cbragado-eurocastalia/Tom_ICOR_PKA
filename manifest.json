@@ -189,6 +189,11 @@
         "path": "SECURITY.md",
         "change_type": "changed",
         "note": "Supported-versions table moved to the 5.5.0 line; v3.0.0 through v5.4.0 marked withdrawn."
+      },
+      {
+        "path": ".gitattributes",
+        "change_type": "added",
+        "note": "New. Marks .github/ as export-ignore so repository infrastructure (issue templates, PR template, our own CI pipeline and the Supabase project URL, edge-function name and secret names inside it) no longer ships inside the scaffold ZIP. It was already outside framework_paths and user_state_paths, so the updater never managed it."
       }
     ]
   },
