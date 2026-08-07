@@ -11,16 +11,16 @@ Output: PKM/Weekly Reports/YYYY/MM/<slug>/
 TWO RULES THIS FILE EXISTS TO ENFORCE
 
 1. ASSEMBLE, NEVER INVENT. Every sentence rendered is traceable to a captured
-   fact: a Journal entry title or excerpt, a Zenon stoic perspective, an image
+   fact: a Journal entry title or excerpt, a reflection entry, an image
    filename, a Deliverable folder, a session-log topic. Where a week has no
    personal capture the edition SAYS SO and renders a work-only record. A
    fabricated recap of someone's own life is worse than a thin one.
 
-2. THE MARKDOWN BODY IS THE SEARCHABLE ARTEFACT. weekly_reports.body is what the
-   RAG corpus embeds (SOP-030). If the body is scaffolding ("## The seven pages",
+2. THE MARKDOWN BODY IS THE SEARCHABLE ARTEFACT. weekly_reports.body is what a
+   RAG corpus embeds. If the body is scaffolding ("## The seven pages",
    "## Build history") then semantic search returns section headers instead of
-   content — which is exactly what happened to edition 28. So the mirror below
-   carries the week's actual narrative, day by day, not a description of the deck.
+   content — a real and easy failure. So the mirror below carries the week's
+   actual narrative, day by day, not a description of the deck.
 
 USAGE
     python3 weekly-report-render.py /tmp/wk-bundles/2026-06-05.json [--force]
@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import urllib.parse
@@ -70,33 +71,64 @@ def first_sentence(text: str, cap: int = 240) -> str:
     return out[:cap].rstrip() + ("…" if len(out) > cap else "")
 
 
-def edition_no(anchor: str) -> int:
-    """Edition 28 is the anchor point (2026-07-10). Editions are one per week, so
-    the number is derivable by week offset from that fixed pair. Stored in
-    frontmatter rather than recomputed by consumers."""
+def _earliest_filed_anchor():
+    """Earliest report_date already filed under PKM/Weekly Reports, or None."""
     import datetime as dt
-    base_d, base_n = dt.date(2026, 7, 10), 28
+    best = None
+    for md in ROOT.glob("*/*/*/metadata.md"):
+        try:
+            m = re.search(r"^report_date:\s*(\d{4}-\d{2}-\d{2})\s*$",
+                          md.read_text(encoding="utf-8"), re.M)
+        except OSError:
+            continue
+        if not m:
+            continue
+        d = dt.date.fromisoformat(m.group(1))
+        if best is None or d < best:
+            best = d
+    return best
+
+
+def edition_no(anchor: str) -> int:
+    """Editions are one per week, numbered from YOUR first filed edition, so a
+    fresh install starts at edition 1 and never implies a back-catalogue that
+    does not exist.
+
+    A series that predates this automation can be pinned with the env var
+    WEEKLY_REPORT_EDITION_ANCHOR="YYYY-MM-DD:N" (edition N fell on that Friday).
+    Stored in frontmatter rather than recomputed by consumers."""
+    import datetime as dt
     d = dt.date.fromisoformat(anchor)
-    return base_n + round((d - base_d).days / 7)
+    env = os.environ.get("WEEKLY_REPORT_EDITION_ANCHOR", "").strip()
+    if ":" in env:
+        base_s, _, n_s = env.partition(":")
+        try:
+            return int(n_s) + round((d - dt.date.fromisoformat(base_s)).days / 7)
+        except ValueError:
+            pass
+    first = _earliest_filed_anchor()
+    if first is None or d <= first:
+        return 1
+    return 1 + round((d - first).days / 7)
 
 
 def split_week(b: dict):
-    subst = [e for e in b["journal"] if not e["is_zenon"]]
-    zenon = {e["date"]: e for e in b["journal"] if e["is_zenon"]}
+    subst = [e for e in b["journal"] if not e["is_reflection"]]
+    reflections = {e["date"]: e for e in b["journal"] if e["is_reflection"]}
     personal = [e for e in subst if (e.get("category") or "") in PERSONAL
                 or (e.get("key_element") or "") in ("family", "health")]
     work = [e for e in subst if e not in personal]
     pivotal = b["pivotal"] or sorted(
         subst, key=lambda e: (e.get("mood_valence") is None, -abs((e.get("mood_valence") or 3) - 3))
     )[:3]
-    return subst, zenon, personal, work, pivotal
+    return subst, reflections, personal, work, pivotal
 
 
 # ==========================================================================
 # markdown mirror  (this is what gets embedded)
 # ==========================================================================
 def build_markdown(b: dict, slug: str, html_name: str) -> str:
-    subst, zenon, personal, work, pivotal = split_week(b)
+    subst, reflections, personal, work, pivotal = split_week(b)
     c, agg = b["counts"], b["aggregate"]
     ed = edition_no(b["anchor"])
     dens = b["density"]
@@ -105,8 +137,8 @@ def build_markdown(b: dict, slug: str, html_name: str) -> str:
         "---", "type: weekly-report", f"report_date: {b['anchor']}", f"slug: {slug}",
         f"edition: {ed}", f"week_start: {b['week_start']}", f"week_end: {b['week_end']}",
         f"iso_week: {b['iso_week']}",
-        # json.dumps, not an f-string with bare quotes: journal titles contain
-        # double quotes (e.g. retiring "tom solid") and a naive quoted scalar
+        # json.dumps, not an f-string with bare quotes: journal titles can contain
+        # double quotes, and a naive quoted scalar
         # produces YAML that parses as a truncated block collection, which silently
         # drops edition/source_* on import.
         "title: " + json.dumps(covers(b) if not subst else subst[0]["title"][:70],
@@ -191,7 +223,7 @@ def build_markdown(b: dict, slug: str, html_name: str) -> str:
                 meta = f" ({', '.join(bits)})" if bits else ""
                 L.append(f"- **{e['title']}**{meta}. {first_sentence(e['excerpt'])}")
                 L.append(f"  [[{e['slug']}]]")
-            z = zenon.get(d)
+            z = reflections.get(d)
             if z and z.get("stoic"):
                 L.append(f"  > {first_sentence(z['stoic'], 300)}")
             L.append("")
@@ -390,7 +422,7 @@ def li(main, qt=""):
 def build_agent_slide(b, ed, cov, up):
     """Slide: the team at work. A horizontal bar chart where each specialist's
     avatar rides the tip of their own bar. Specialists with no avatar.png fall
-    back to initials rather than a broken image (Marcus has none)."""
+    back to initials rather than a broken image (not every specialist has one)."""
     agents = b.get("agents") or []
     total = b["counts"]["sessions"]
     if not agents:
@@ -455,7 +487,7 @@ def build_agent_slide(b, ed, cov, up):
 
 
 def build_html(b: dict, slug: str) -> str:
-    subst, zenon, personal, work, pivotal = split_week(b)
+    subst, reflections, personal, work, pivotal = split_week(b)
     c, agg = b["counts"], b["aggregate"]
     ed, cov = edition_no(b["anchor"]), covers(b)
     up = "../" * 5          # vault root (image `file` values are vault-relative)
@@ -481,7 +513,7 @@ def build_html(b: dict, slug: str) -> str:
             'C 320 45.5, 420 40.5, 548 42"/></svg>')
     p1 = (f'<section class="slide cover is-active" id="p1" aria-label="Front page">{mark}'
           f'<div class="folio"><span>Edition No. {ed}</span>'
-          f'<span>Tom&#39;s week, read back to you</span><span>myPKA team</span></div>'
+          f'<span>Your week, read back to you</span><span>myPKA team</span></div>'
           f'<div class="nameplate"><div class="name">THE WEEK <span class="ink-accent">IN INK</span></div>'
           f'<span class="dateline">{esc(cov)} &middot; {esc(b["iso_week"])} &middot; density {esc(b["density"])}</span></div>'
           f'<h1 class="gx-lead">{esc(lead)}</h1>'
@@ -495,8 +527,8 @@ def build_html(b: dict, slug: str) -> str:
             f'<span class="dt">{esc(e["weekday"])} {esc(e["date"])}</span></div>'
             f'<h3>{esc(e["title"])}</h3>'
             f'<div class="body">{esc(first_sentence(e["excerpt"], 300))}</div>'
-            + (f'<div class="stoic">{esc(first_sentence(zenon[e["date"]]["stoic"], 240))}</div>'
-               if zenon.get(e["date"]) and zenon[e["date"]].get("stoic") else "")
+            + (f'<div class="stoic">{esc(first_sentence(reflections[e["date"]]["stoic"], 240))}</div>'
+               if reflections.get(e["date"]) and reflections[e["date"]].get("stoic") else "")
             + '</div>' for n, e in enumerate(pivotal[:3]))
         note = ("" if b["pivotal"] else
                 '<p class="gx-note">Nothing was tagged a pivotal moment this week. These are '
@@ -622,9 +654,9 @@ def build_html(b: dict, slug: str) -> str:
 
 
 # Frontmatter keys a human may have curated by hand, which a re-render must never
-# clobber. Learned the hard way: a --force pass over edition 28 replaced its real
-# title, blanked its podcast pointer, and swapped its curated 11-image source list
-# for all 20 files that merely fell inside the date window.
+# clobber. Learned the hard way: a --force pass over a hand-curated edition can
+# replace its real title, blank its podcast pointer, and swap a curated image
+# list for every file that merely fell inside the date window.
 CURATED_KEYS = ("title", "podcast_path", "podcast_duration", "source_images",
                 "pivotal_moments", "specialists", "status")
 CURATED_BEGIN = "<!-- CURATED:BEGIN -->"
@@ -696,9 +728,8 @@ TEAM_END = "<!-- TEAMSLIDE:END -->"
 def inject_team_slide(html_path: Path, b: dict) -> bool:
     """Give a HAND-BUILT deck the generated team slide without touching anything else.
 
-    Edition 28's deck is authored and must never be regenerated, but its week has the
-    richest specialist data in the archive and the slide is pure derived analytics, so
-    it does not conflict with hand-authored narrative. The block is marker-wrapped and
+    A hand-authored deck must never be regenerated, but the team slide is pure
+    derived analytics, so it does not conflict with hand-authored narrative. The block is marker-wrapped and
     idempotent. Its own engine reads slides.length dynamically, so the page counter and
     dots pick the extra slide up with no change to its JavaScript.
 
@@ -742,10 +773,9 @@ def render(bundle_path: Path, force: bool) -> str | None:
     keep, curated_body = read_existing(out / "metadata.md")
     md = apply_curated(build_markdown(b, slug, html_name), keep, curated_body)
     (out / "metadata.md").write_text(md, encoding="utf-8")
-    # A hand-authored deck is never regenerable: edition 28 carries a produced
-    # episode, an audio-synced player, chapters and a transcript that no assembler
-    # can reproduce. A --force pass once destroyed it and it had to be recovered
-    # from git. The sentinel makes that unrepeatable.
+    # A hand-authored deck is never regenerable: it can carry a produced episode,
+    # an audio-synced player, chapters and a transcript that no assembler can
+    # reproduce. A --force pass over one destroys it. The sentinel prevents that.
     if (out / ".hand-built").exists():
         did = inject_team_slide(out / html_name, b)
         return (f"metadata refreshed, hand-built deck preserved"

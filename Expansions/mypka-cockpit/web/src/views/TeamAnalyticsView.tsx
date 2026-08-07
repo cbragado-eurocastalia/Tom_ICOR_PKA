@@ -5,7 +5,7 @@
 // Source: /api/cockpit/analytics/team?from&to over session_logs (one row per run).
 // Read-only, loopback posture like every other view. Avatars come from the
 // Team/-jailed /api/cockpit/avatar route; an absent path OR a failed load falls
-// back to initials rather than a broken image (Marcus has no avatar on disk).
+// back to initials rather than a broken image (not every specialist has one).
 //
 // Every value is a GL-003 token; no hardcoded colours.
 import { useMemo, useState } from 'react';

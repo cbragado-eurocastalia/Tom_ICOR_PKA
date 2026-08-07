@@ -1,14 +1,12 @@
 /* The Week in Ink deck stylesheet.
-   Extracted verbatim from edition 28 (fonts stripped to _assets/inkline-fonts.css)
-   so generated editions are visually identical to the hand-built original.
-   Edition 28 keeps its own inline copy and is not affected by changes here. */
+   Shared by every generated edition (fonts live in _assets/inkline-fonts.css).
+   A hand-built edition may keep its own inline copy, in which case it is not
+   affected by changes here. */
 /* ============================================================
-   INKLINE · THE WEEK IN INK · Friday weekly recap (week 28)
-   Paginated 16:9 page-flip newspaper. Built per GL-061 (INKLINE
-   Report Pages) on the ratified exemplar plan.html. Tokens consumed
-   from GL-003 (Iris SSOT, ink room default, GL-003 SS2.1) and cited
-   by name below. Self-contained: fonts embedded as data URIs,
-   zero external requests. GL-058 infinity-loop motif.
+   INKLINE · THE WEEK IN INK · Friday weekly recap
+   Paginated 16:9 page-flip newspaper. Design tokens are consumed
+   from the design system and cited by name below. Self-contained:
+   fonts embedded as data URIs, zero external requests.
    ============================================================ */
 
 
@@ -45,7 +43,7 @@
 html { font-size: 16px; }
 body {
   background: var(--bg);
-  /* GL-003 SS5.5 sanctioned room wash, exact recipe */
+  /* Sanctioned room wash, exact recipe */
   background-image: radial-gradient(120% 80% at 82% -12%, rgba(255,90,45,0.055), transparent 55%);
   background-attachment: fixed;
   color: var(--dim);
@@ -351,7 +349,7 @@ em { font-style: normal; color: var(--fg); }
 
 /* ============================================================
    MEDIA ENRICHMENT · figures, lightbox, threads, real player
-   (assets/ relative paths: Tom-approved amendment to the
+   (assets/ relative paths: pre-approved amendment to the
    inline-everything law for this private artifact. Zero network.)
    ============================================================ */
 .thumb {

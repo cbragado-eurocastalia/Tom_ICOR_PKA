@@ -6,7 +6,7 @@
 // under 900px; board.css re-anchors it inside the canvas). Fetches the target
 // through the same collision-aware /api/cockpit/resolve/:slug the universal
 // viewer uses and renders the body via WikiMarkdown with its link clicks
-// REROUTED to onHop — so Tom can hop link-to-link without ever leaving the
+// REROUTED to onHop — so the user can hop link-to-link without ever leaving the
 // surface he is working on. Esc (while focus is inside the panel) closes it;
 // the host keeps its own focus/caret untouched because opening never steals
 // focus. Maximize2 leaves for the note's canonical route: a fleeting note's

@@ -75,7 +75,7 @@ export function Mind({
       onToggle={onToggle}
     >
       {/* v3 #1 — patterns moved to the TOP of Mind so they sit directly
-          after the Body values (Tom's explicit ask). Each card is valence-coloured
+          after the Body values (product decision). Each card is valence-coloured
           (good / watch / straining) and opens its FULL text in a Sheet. */}
       <div className="mb-md">
         <Collapsible
@@ -135,7 +135,7 @@ export function Mind({
             <div className="flex flex-col gap-sm">
               <p className="text-body text-fg-muted">Profile in progress.</p>
               <p className="text-caption leading-relaxed text-fg-subtle">
-                Anima fills the synthesis layer from the patterns and journal entries.
+                The synthesis layer is filled from the patterns and journal entries.
               </p>
               <p className="text-caption leading-relaxed text-fg-subtle">
                 Gated — only on a durable pattern. Until then, the four lived patterns

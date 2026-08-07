@@ -1,6 +1,6 @@
 // MediaView.tsx — the films & series LIBRARY ("Filme & Serien"). Surfaces the
 // `media` mirror table (GET /api/cockpit/media-library) as a responsive card
-// grid Tom can browse and filter on: media_type (film/serie), status, rating,
+// grid the user can browse and filter on: media_type (film/serie), status, rating,
 // genre, plus a free-text search across title / director-creator / verdict / tags.
 //
 // Read-only, loopback/LAN posture like every other view. Media entries are
@@ -8,7 +8,7 @@
 // view is a derived read. NULLs are HONEST signals, never errors: rating NULL =
 // unrated (render "—", never 0 stars or "0"); platform NULL = unknown (render
 // blank, no placeholder); total_seasons/episodes_watched NULL on films.
-// `verdict` is Tom's verbatim take — rendered as-is, line breaks preserved,
+// `verdict` is the user's verbatim take — rendered as-is, line breaks preserved,
 // never translated or truncated.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Clapperboard, Star, Search } from 'lucide-react';
@@ -140,7 +140,7 @@ function MediaCard({ item }: { item: MediaItem }) {
 
       {item.progress && <span className="media-progress">{item.progress}</span>}
 
-      {/* Verdict — Tom's verbatim take. Line breaks preserved (white-space:
+      {/* Verdict — the user's verbatim take. Line breaks preserved (white-space:
           pre-line via .media-verdict). Never translated, never truncated. */}
       {item.verdict && <p className="media-verdict">{item.verdict}</p>}
 

@@ -39,7 +39,7 @@ export function useWorkbenchSave(slug: string, initialMtime: number): UseWorkben
   const pendingMarkdown = useRef<string | null>(null);
   // H3 — the last text we actually attempted to PUT. onChange/flush null out
   // pendingMarkdown after capture, so on a 412 conflict overwrite() would read
-  // null and silently no-op (Tom's edit never forced). Retaining it here lets
+  // null and silently no-op (the user's edit never forced). Retaining it here lets
   // overwrite() force the last-attempted body even after pending was cleared.
   const lastAttempted = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -130,7 +130,7 @@ export function useWorkbenchSave(slug: string, initialMtime: number): UseWorkben
   const overwrite = useCallback(async () => {
     // Force-save the latest known text, ignoring the precondition (plan §4).
     // Fall back to lastAttempted so a 412 conflict (where pendingMarkdown was
-    // already nulled out at capture) still forces Tom's edit (H3).
+    // already nulled out at capture) still forces the user's edit (H3).
     const md = pendingMarkdown.current ?? lastAttempted.current;
     if (md !== null) await doSave(md, true);
   }, [doSave]);

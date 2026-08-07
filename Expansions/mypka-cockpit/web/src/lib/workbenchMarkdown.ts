@@ -8,7 +8,7 @@
 // lists, blockquotes, fenced code blocks, horizontal rules, block images, and
 // the inline mark set (bold/italic/strike/code/link). A full CommonMark engine
 // is over-powered and (worse) NOT identity-stable: its serializers re-wrap and
-// re-indent in ways that churn Tom's hand-editable files. A focused walker is
+// re-indent in ways that churn the user's hand-editable files. A focused walker is
 // exact, dependency-free, and property-testable (parse∘serialize = id — see the
 // node self-check battery, docs/outliner-review.md §4).
 //

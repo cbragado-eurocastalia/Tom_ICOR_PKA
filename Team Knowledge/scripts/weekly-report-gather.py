@@ -140,7 +140,10 @@ def gather(anchor: dt.date) -> dict:
                       ("mood_frustration", "mood_motivation", "mood_positivity",
                        "mood_anxiety", "mood_clarity") if fm.get(k) is not None},
             "is_pivotal": "pivotal-moment" in slug,
-            "is_zenon": "zenon-perspe" in slug or "zenon-perspektive" in slug,
+            # A journal entry whose slug carries one of these markers is the
+            # week's reflection companion piece rather than a substantive
+            # capture. Adjust the markers to match your own naming convention.
+            "is_reflection": any(m in slug for m in ("perspective", "perspektive", "stoic")),
             "file": str(f.relative_to(VAULT)),
             "excerpt": " ".join(re.sub(r'^#.*$', '', body, flags=re.M).split())[:400],
         })
@@ -240,7 +243,7 @@ def gather(anchor: dt.date) -> dict:
             agg["key_elements"][e["key_element"]] = agg["key_elements"].get(e["key_element"], 0) + 1
 
     # ---- density -----------------------------------------------------------
-    substantive = [e for e in journal if not e["is_zenon"]]
+    substantive = [e for e in journal if not e["is_reflection"]]
     if len(substantive) >= 6 and images:
         density = "full"
     elif substantive or images:

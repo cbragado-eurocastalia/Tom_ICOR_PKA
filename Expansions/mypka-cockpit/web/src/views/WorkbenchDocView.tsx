@@ -9,7 +9,7 @@
 // off — the Vex gate): the FIRST save attempt returns 503; useWorkbenchSave flips
 // status to 'disabled'; we set the editor read-only and show the calm notice. We
 // do NOT pre-flight a probe — the first edit naturally surfaces the state, and an
-// unedited doc stays fully editable-looking until Tom actually changes something
+// unedited doc stays fully editable-looking until the user actually changes something
 // (no nagging banner on a doc he's only reading).
 //
 // Data: GET /api/cockpit/notes/:slug -> { slug, title, markdown, mtime }
@@ -42,7 +42,7 @@ export function WorkbenchDocView({ route }: { route: Extract<Route, { name: 'not
   // The loading / error states have no editor mounted yet, so a plain back link
   // is correct here. The live editor view builds its OWN flush-before-navigate
   // back button (see WorkbenchDocEditor) so an in-flight debounced edit is never
-  // dropped when Tom clicks "Workbench" within the autosave debounce window.
+  // dropped when the user clicks "Workbench" within the autosave debounce window.
   const back = (
     <button type="button" className="back-button" onClick={() => navigate({ name: 'notes' })}>
       <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" /> Fleeting Notes
@@ -84,7 +84,7 @@ function WorkbenchDocEditor({
 
   // The editor is read-only once we learn the write path is dormant (503) or a
   // hard error makes further edits pointless. A 412 conflict keeps it editable
-  // (Tom can re-edit then overwrite).
+  // (the user can re-edit then overwrite).
   const [forcedReadOnly, setForcedReadOnly] = useState(false);
   useEffect(() => {
     if (status.kind === 'disabled') setForcedReadOnly(true);

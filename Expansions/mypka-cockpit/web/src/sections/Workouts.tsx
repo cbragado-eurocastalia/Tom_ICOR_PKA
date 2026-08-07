@@ -10,8 +10,8 @@
 //   • Clicking a workout in the list highlights its route on the map (lazy-fetches
 //     that one simplified GeoJSON line) and frames the camera to it.
 //
-// Mobile-first: on narrow screens the map stacks above the list (Tom checks this
-// on his phone). The map gets a sensible fixed height; the list scrolls under it.
+// Mobile-first: on narrow screens the map stacks above the list (verified on
+// phones). The map gets a sensible fixed height; the list scrolls under it.
 import { useMemo } from 'react';
 import { Flame, Footprints, Bike, Mountain, Activity, MapPin } from 'lucide-react';
 import { Card } from '../components/ui';

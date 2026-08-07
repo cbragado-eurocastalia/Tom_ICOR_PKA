@@ -4,7 +4,7 @@
 //   1. PERSISTENCE — collapse state is EPHEMERAL view state, NEVER written to
 //      markdown/disk (plan §4 / motion-spec §1.1). It lives in localStorage keyed
 //      by file path + a content-path ("0.2.1" = root[0] > child[2] > child[1]). On
-//      a path mismatch (Tom hand-edited the .md outside the cockpit and the tree
+//      a path mismatch (the user hand-edited the .md outside the cockpit and the tree
 //      shifted) we render EXPANDED — the safe default, no data loss, no sidecar.
 //   2. DECORATION — a ProseMirror plugin that (a) hides the child bulletList of a
 //      collapsed listItem and (b) marks rows that HAVE children so the chevron and
@@ -110,7 +110,7 @@ export function collectListItems(doc: PMNode): { pos: number; path: string; hasC
 // `grid-template-rows:0fr; overflow:hidden` — visually `display:none`-equivalent,
 // but ProseMirror's NATIVE vertical caret motion (ArrowUp/ArrowDown) still walks
 // the document positions INSIDE that hidden subtree, so the caret visibly pauses
-// on hidden lines before reaching the next visible row (Tom 2026-06-09 bug).
+// on hidden lines before reaching the next visible row (2026-06-09 bug).
 //
 // Fix: compute the set of hidden ranges (the child bulletList of every collapsed
 // listItem, at any depth) from the SAME source of truth the decoration uses (the
@@ -325,8 +325,8 @@ function createCollapsePlugin(onToggle: (view: EditorView, pos: number) => void)
       decorations(state) {
         return this.getState(state) ?? null;
       },
-      // Bullet click toggles collapse. The chevron glyph was removed (Tom
-      // 2026-06-09); the BULLET (a ::before pseudo in the row's left gutter) is
+      // Bullet click toggles collapse. The chevron glyph was removed
+      // (2026-06-09); the BULLET (a ::before pseudo in the row's left gutter) is
       // now the sole click affordance for folding. A pseudo-element can't receive
       // its own listener, so we hit-test the click X against the row's left edge:
       // a click anywhere in the gutter zone of a row that HAS children toggles it.

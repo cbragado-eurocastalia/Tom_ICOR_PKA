@@ -1,5 +1,5 @@
 // summaries.ts — the one-line quick-stats shown when a section is collapsed (v2 #2).
-// Each lets Tom scan the state of an area without expanding it.
+// Each lets the user scan the state of an area without expanding it.
 import type {
   HabitCard,
   JournalEntry,

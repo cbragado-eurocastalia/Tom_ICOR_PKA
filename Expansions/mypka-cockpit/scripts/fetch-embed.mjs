@@ -2,7 +2,7 @@
 // fetch-embed.mjs — Outer World capture-time embed fetcher (Item 10).
 //
 // WHAT THIS IS
-//   A CAPTURE-TIME helper. When Tom saves external content into his myPKA, the
+//   A CAPTURE-TIME helper. When the user saves external content into their myPKA, the
 //   LLM (Larry, who has network access at save time) runs this once against the
 //   URL. It classifies the link, fetches OG/oEmbed metadata, optionally localizes
 //   the preview image into PKM/Images/, and prints a FLAT `embed_*` frontmatter

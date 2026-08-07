@@ -47,7 +47,7 @@ export function DashboardView() {
           <DisclaimerBanner />
 
           {/* v3 #1 — section order is BODY → MIND (patterns) → TRENDS → PLANNED.
-              Tom wants the MIND "patterns" cards directly after the body values, so
+              The MIND "patterns" cards sit directly after the body values, so
               the psyche/patterns sit right under the Body readings, not at the
               very bottom. PLANNED (the path forward) closes the page. */}
           <Body

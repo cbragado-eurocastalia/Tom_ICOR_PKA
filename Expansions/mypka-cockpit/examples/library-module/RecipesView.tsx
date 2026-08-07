@@ -1,5 +1,5 @@
 // RecipesView.tsx — the recipe LIBRARY ("Rezepte"). Surfaces the `recipes`
-// mirror table (GET /api/cockpit/recipes) as a responsive card grid Tom can
+// mirror table (GET /api/cockpit/recipes) as a responsive card grid the user can
 // browse and filter on the schema axes that matter: cuisine, dish_type,
 // difficulty, status, plus a free-text search across title / key ingredients /
 // tags.

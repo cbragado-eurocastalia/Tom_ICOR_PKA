@@ -1,9 +1,13 @@
 // status.ts — REFERENCE-RANGE classification. An assessment, not a diagnosis.
 //
-// v2 change (Tom's explicit override): he wants clear red / amber / green status
-// indicators, NOT the earlier calm-only palette. So each metric now carries a
-// `severity` ('green' | 'amber' | 'red') that drives a readable status colour.
-// BUT we keep two health-anxiety-aware guarantees from v1:
+// Every threshold and reference range below is GENERAL published guidance, not
+// anyone's personal target. Nothing here describes a specific person, and no
+// value in this file is a measurement — the numbers are cut-points, and the
+// readings they classify come from the installing user's own Apple Health data.
+//
+// v2: each metric carries a `severity` ('green' | 'amber' | 'red') that drives a
+// readable status colour, replacing the earlier calm-only palette. Two
+// health-anxiety-aware guarantees from v1 are kept:
 //   1. Every RED metric still carries its `plan` ("→ Planned" link) — a red value
 //      always arrives with "here's the next step", never as a bare verdict.
 //   2. The calm `tone` (in range / watch / discuss with doctor) is retained as the
@@ -11,7 +15,7 @@
 //
 // Plus per-metric trend (current vs prior reference): the arrow direction and
 // whether a given move reads as reassuring or worth-watching is metric-specific
-// (weight DOWN is good; RHR UP is worth watching; VO2max UP is good).
+// (RHR UP is worth watching; VO2max UP is good; weight has no inherent direction).
 
 import type { MetricTrend, ScalarMetric, TrendKey } from './types';
 
@@ -72,7 +76,7 @@ const TONE_LABEL: Record<Tone, string> = {
 // For each metric: which raw direction (+1/-1) counts as 'better'.
 // null => 'info' (no inherently good direction without clinical context).
 const BETTER_WHEN: Record<TrendKey, 1 | -1 | null> = {
-  weight: -1, // down is the active goal (PKV)
+  weight: null, // no good direction without clinical context — informational only
   bmi: -1,
   bodyFat: -1,
   vo2: 1, // higher fitness
@@ -110,8 +114,8 @@ function buildTrendView(key: TrendKey, t: MetricTrend | null): TrendView | null 
   };
 }
 
-// tone (calm label) + severity (red/amber/green light) decoupled. Tom wants the
-// light to be unmistakable; the words stay calm.
+// tone (calm label) + severity (red/amber/green light) decoupled: the light is
+// unmistakable, the words stay calm.
 const SEV_FROM_TONE: Record<Tone, Severity> = {
   good: 'green',
   watch: 'amber',
@@ -132,7 +136,7 @@ export function buildMetricViews(m: {
 }): MetricView[] {
   const raw: Omit<MetricView, 'severity' | 'toneLabel' | 'trend'>[] = [];
 
-  // Weight — no clinical "range"; the trend now carries the signal (down = goal).
+  // Weight — no clinical "range" on its own; the trend is informational.
   raw.push({
     key: 'weight',
     label: 'Weight',
@@ -141,10 +145,9 @@ export function buildMetricViews(m: {
     unit: 'kg',
     tone: 'neutral',
     reference: 'no clinical range · the trend is what counts',
-    plan: 'Kitchen closed · nutrition plan',
   });
 
-  // BMI — the obesity range is the PKV story; framed as the active project.
+  // BMI — WHO cut-points: <25 normal, 25–30 overweight, >=30 obese.
   const bmi = m.bmi?.value ?? null;
   raw.push({
     key: 'bmi',
@@ -153,8 +156,8 @@ export function buildMetricViews(m: {
     display: fmt(bmi, 1),
     unit: '',
     tone: bmi !== null && bmi >= 30 ? 'attn' : bmi !== null && bmi >= 25 ? 'watch' : 'good',
-    reference: 'Normal <25 · PKV deadline 21.06.',
-    plan: 'Weight management (PKV) · kitchen closed',
+    reference: 'Normal <25 (WHO)',
+    plan: 'Weight management',
   });
 
   // Body-fat % — reference ~10–20% athletic, >25% high for male.
@@ -167,10 +170,11 @@ export function buildMetricViews(m: {
     unit: '%',
     tone: bf !== null && bf >= 30 ? 'attn' : bf !== null && bf >= 25 ? 'watch' : 'good',
     reference: 'Reference ~10–20 % (m)',
-    plan: 'Weight management (PKV)',
+    plan: 'Weight management',
   });
 
-  // VO2max — <30 reads "Poor" for a 43yo male per health.md; <25 is the red zone.
+  // VO2max — published cohort tables read <30 as low for a middle-aged adult;
+  // <25 is the red zone. General guidance, not a personal target.
   const vo2 = m.vo2?.value ?? null;
   raw.push({
     key: 'vo2',
@@ -180,7 +184,7 @@ export function buildMetricViews(m: {
     unit: 'ml/kg·min',
     tone: vo2 !== null && vo2 < 26 ? 'attn' : vo2 !== null && vo2 < 30 ? 'watch' : 'good',
     reference: '≥30 for the age cohort',
-    plan: 'Daily movement · GP appointment',
+    plan: 'Daily movement',
   });
 
   // Resting HR — 60–80 normal; >85 or <50 worth watching.
@@ -193,7 +197,7 @@ export function buildMetricViews(m: {
     unit: 'bpm',
     tone: rhr !== null && (rhr > 85 || rhr < 48) ? 'attn' : rhr !== null && (rhr > 80 || rhr < 52) ? 'watch' : 'good',
     reference: 'Reference 60–80 bpm · 30-day avg',
-    plan: rhr !== null && rhr > 80 ? 'Movement · sleep · GP appointment' : undefined,
+    plan: rhr !== null && rhr > 80 ? 'Movement · sleep' : undefined,
   });
 
   // HRV — higher is calmer; <20 is the watch zone (autonomic load).
@@ -208,7 +212,7 @@ export function buildMetricViews(m: {
     reference: 'higher is calmer · daily mean',
   });
 
-  // SpO2 nadir — nightly low. <88 is the apnoea-signal red; pair with HNO plan.
+  // SpO2 nadir — nightly low. Sustained lows are a recognised screening signal.
   const spo2 = m.spo2?.value ?? null;
   raw.push({
     key: 'spo2',
@@ -218,11 +222,11 @@ export function buildMetricViews(m: {
     unit: '%',
     tone: spo2 !== null && spo2 < 88 ? 'attn' : spo2 !== null && spo2 < 90 ? 'watch' : 'good',
     reference: 'low ≥90 % desired',
-    plan: 'ENT / sleep-apnea appointment (overdue)',
+    plan: 'Discuss sleep breathing with your doctor',
     sub: m.spo2?.avg_value != null ? `avg ${fmt(m.spo2.avg_value, 0)} % · ${m.spo2?.n ?? 0} readings` : undefined,
   });
 
-  // Breathing disturbances — apnoea proxy. >=15/night reds; pairs with HNO plan.
+  // Breathing disturbances — a nightly-count signal; >=15/night reds.
   const bd = m.breathing?.value ?? null;
   raw.push({
     key: 'breathing',
@@ -232,7 +236,7 @@ export function buildMetricViews(m: {
     unit: '/night',
     tone: bd !== null && bd >= 15 ? 'attn' : bd !== null && bd >= 5 ? 'watch' : 'good',
     reference: 'Apple Watch signal · lower is calmer',
-    plan: 'ENT / sleep-apnea appointment (overdue)',
+    plan: 'Discuss sleep breathing with your doctor',
   });
 
   return raw.map((v) => ({

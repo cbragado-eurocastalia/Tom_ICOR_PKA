@@ -356,7 +356,7 @@ tags:
 
 **Notes:**
 
-- **`iso_week` describes the anchor, NOT the covered span.** An edition is anchored on a Friday but opens the preceding Saturday, which can fall in the previous ISO week: edition 28 is labelled `2026-W28` yet covers 2026-07-04, a Saturday in ISO week 27. Always render and query the explicit `week_start` to `week_end` range. The week number alone is ambiguous to a reader and wrong to parse.
+- **`iso_week` describes the anchor, NOT the covered span.** An edition is anchored on a Friday but opens the preceding Saturday, which can fall in the previous ISO week: an edition labelled `2026-W28` can cover a Saturday that sits in ISO week 27. Always render and query the explicit `week_start` to `week_end` range. The week number alone is ambiguous to a reader and wrong to parse.
 - `report_date` is the Friday anchor and the natural key (one edition per week). `week_end` equals it by contract.
 - `edition` is monotonic and is not derivable from the date if the series predates the automation, so it is stored.
 - `html_render` is a **bare filename** inside the edition folder. `podcast_path` is **folder-relative**, because original media lives in its canonical PKM home rather than in the edition folder (see the media rule below).

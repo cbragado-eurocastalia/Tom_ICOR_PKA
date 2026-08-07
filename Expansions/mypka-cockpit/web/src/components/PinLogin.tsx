@@ -4,7 +4,7 @@
 // expires mid-use. On success it calls onAuthed() and the gate renders the app.
 //
 // Design: GL-003 tokens only (no hardcoded hex / px-as-design-value). Mobile-first
-// — Tom uses this on his phone, so large tap targets (≥44px), a numeric keypad
+// — this is used on phones, so large tap targets (≥44px), a numeric keypad
 // (inputMode="numeric"), and a layout that holds at 375px. Accessible: labelled
 // input, autofocus, aria-live error region, Enter submits, busy state announced.
 import { useEffect, useRef, useState } from 'react';

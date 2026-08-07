@@ -80,7 +80,7 @@ interface Props {
   editable: boolean;
   /** Fires (debounced upstream) with the current markdown on every change. */
   onChange: (markdown: string) => void;
-  /** Fires with the slugified target when Tom clicks a rendered [[wikilink]]
+  /** Fires with the slugified target when the user clicks a rendered [[wikilink]]
    *  (live-preview decoration). The host opens its context panel; the caret
    *  still lands in the text. Optional — without it links render but only
    *  style. */

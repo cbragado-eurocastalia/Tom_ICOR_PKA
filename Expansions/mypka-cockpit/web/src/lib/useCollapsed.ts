@@ -1,5 +1,5 @@
 // useCollapsed — per-section open/closed state, persisted to localStorage so the
-// dashboard remembers what Tom collapsed between reloads. Defaults to open.
+// dashboard remembers what the user collapsed between reloads. Defaults to open.
 import { useCallback, useState } from 'react';
 
 const KEY = 'mypka-dash-collapsed-v1';

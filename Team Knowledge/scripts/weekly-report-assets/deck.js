@@ -1,13 +1,12 @@
 /* The Week in Ink deck engine (shared by generated editions).
  *
- * Behaviour is a re-implementation of edition 28's inline engine against the same
- * DOM and the same class names, with one deliberate difference: EVERY lookup is
- * null-guarded. Edition 28's original engine assumes a podcast player, chapter
- * list and transcript exist, so reusing it verbatim on an edition without audio
- * throws on the first addEventListener. Generated editions have no episode, so
- * this engine treats every optional part as optional.
+ * Behaviour matches the hand-built deck engine against the same DOM and class
+ * names, with one deliberate difference: EVERY lookup is null-guarded. A deck
+ * engine that assumes a podcast player, chapter list and transcript exist will
+ * throw on the first addEventListener for an edition without audio. Generated
+ * editions have no episode, so this engine treats every optional part as such.
  *
- * Edition 28 keeps its own inline engine and does not load this file.
+ * A hand-built edition keeps its own inline engine and does not load this file.
  *
  * Contract: .deck-viewport > .stage#stage > section.slide, plus optional
  * #prev #next #dots #curNum #totNum #edgeLeft #edgeRight #lightbox #lbImg #lbCap #lbClose.

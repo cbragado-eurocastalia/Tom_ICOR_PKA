@@ -725,7 +725,7 @@
   font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--fg-muted);
-  /* Verbatim — preserve Tom's line breaks. */
+  /* Verbatim — preserve the user's line breaks. */
   white-space: pre-line;
 }
 
@@ -1702,7 +1702,7 @@
 
 /* ---- CSS-first fullscreen (iOS-Safari-reliable; native is progressive-only) -
    Safari does NOT support requestFullscreen on arbitrary DOM elements, so the
-   reliable fullscreen on Tom's iPhone is this position:fixed viewport fill. The
+   reliable fullscreen on iOS is this position:fixed viewport fill. The
    wrap lifts out of document flow and covers everything; the inner .workout-map
    stretches to the wrap. Native fullscreen (desktop) layers on top of this and
    shares the same fill. */
@@ -1845,7 +1845,7 @@
    DAY-PLANNER (kanban) — Iris spec 04, 2026-06-02. Structural CSS only.
    Built entirely on planner tokens in index.css (zero new colours/spacing).
    "Calm operator, warm material." ONE accent. No alarm-red. Capacity is
-   communicated by the COUNT of cards in a lane, never a meter (Tom's call).
+   communicated by the COUNT of cards in a lane, never a meter (product decision).
 
    MOTION OWNERSHIP: every animated behaviour below (drag-lift, drop-settle,
    insertion-line grow, ghost-gap open, timer tick) belongs to Vivi (03) and is
@@ -2072,10 +2072,10 @@
    vertical rail beside a full-width board still reads, but if the gutter ever feels tight
    on a phone it can hide — kept visible by default (it's only 16px). */
 
-/* ---- Day box (AM/PM half-panels — the framed "house panels" Tom loves, ×2) - */
+/* ---- Day box (AM/PM half-panels — the framed "house panels", ×2) - */
 /* Iris 12 §3.2: each day is now TWO of the Iris-10 house panels — an AM box (grid-row
    1) and a PM box (grid-row 3) — keeping the EXACT recipe (1px --border + 8px radius +
-   --surface-1). The boxes Tom loves survive, now one per half. */
+   --surface-1). The framed boxes survive, now one per half. */
 .planner-daybox {
   display: flex; flex-direction: column; gap: var(--planner-lane-gap);
   padding: var(--planner-col-pad);
@@ -2956,10 +2956,10 @@
    bottom and only the thread scrolls. Overrides the centered reading column. */
 .cockpit-content--chat {
   max-width: 880px;
-  /* INDEPENDENT-OVERLAY architecture (Tom 2026-06-04, iOS keyboard-sticky v4, per Pax research
+  /* INDEPENDENT-OVERLAY architecture (2026-06-04, iOS keyboard-sticky v4, per Pax research
      brief). The v3 SHELL-TRACKS-VISUAL-VIEWPORT approach made THIS element a fixed overlay
      sized to `--vvh` and shifted by `translateY(--kb-offset)` with the composer NESTED inside
-     it — but a composer nested in a transforming parent DRIFTS when you scroll up (Tom's v3
+     it — but a composer nested in a transforming parent DRIFTS when you scroll up (v3
      re-test). v4 removes that complexity entirely: this shell no longer tracks the visual
      viewport and carries NO transform. It is a plain fixed container that fills the LOCKED
      layout viewport from below the topbar to the bottom edge (the document is page-locked by
@@ -2989,7 +2989,7 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden; /* the THREAD scrolls (flex:1, overflow-y:auto); the shell never does */
-  /* HORIZONTAL LOCK on the SHELL ITSELF (Tom 2026-06-04: "can drag the page LEFT/RIGHT").
+  /* HORIZONTAL LOCK on the SHELL ITSELF (2026-06-04, reported: "can drag the page LEFT/RIGHT").
      This fixed box is the touch hit-target overlaying the body, so the body's touch-action
      does not govern touches landing here — the lock must live on the element receiving the
      touch. The shell never scrolls (overflow:hidden; the THREAD is the only scroller, and it
@@ -3001,7 +3001,7 @@
   touch-action: none;
   overscroll-behavior: none;
 }
-/* PAGE LOCK (Tom 2026-06-04: "not sticky at all, the whole page can be dragged around").
+/* PAGE LOCK (2026-06-04, reported: "not sticky at all, the whole page can be dragged around").
    On the chat route the DOCUMENT must not scroll or rubber-band — the ONLY scroller is
    .chat-thread. We lock html+body whenever the chat route is mounted (:has() is well-
    supported on both iOS Safari and Android Chrome in mid-2026): full-height, overflow
@@ -3022,7 +3022,7 @@ body:has(.cockpit-content--chat) {
    left to drag. Scoped to the class so leaving the chat route fully restores normal scroll.
    --topbar-h/--kb-inset wiring is untouched: the inner shell still owns the height calc.
 
-   GENUINE iOS LOCK (Tom 2026-06-04 re-test: "still able to move the page LEFT and RIGHT" +
+   GENUINE iOS LOCK (2026-06-04 re-test: "still able to move the page LEFT and RIGHT" +
    "still move the text box down"). Root cause of BOTH was `touch-action: pan-x` here: it
    explicitly PERMITTED one-finger horizontal panning of the body, so iOS let the document
    pan on the X axis AND, mid-pan, the visual viewport drifted (offsetTop churned) and the
@@ -3182,7 +3182,7 @@ body.chat-locked {
   list-style: none; margin: 0 0 8px; padding: 0;
   display: flex; flex-wrap: wrap; gap: 6px;
 }
-/* Tom #6 — Larry's own tool chips render BELOW the text now (sequential progress),
+/* Feedback #6 — Larry's own tool chips render BELOW the text now (sequential progress),
    so they get top margin instead of bottom. */
 .chat-toolchips--below { margin: 8px 0 0; }
 .chat-toolchip {
@@ -3503,7 +3503,7 @@ body.chat-locked {
    roomy textarea on TOP and a toolbar on the BOTTOM (tools left · send right). The
    old cramped single-row of 44px icon buttons is gone. Tokens only (GL-003 dark).
 
-   INDEPENDENT COMPOSER OVERLAY (Tom 2026-06-04, iOS keyboard-sticky v4.1): the composer is
+   INDEPENDENT COMPOSER OVERLAY (2026-06-04, iOS keyboard-sticky v4.1): the composer is
    wrapped in `.chat-composer-overlay`, a `position:fixed` element that is a SIBLING of
    .chat-thread (NOT nested in the scroller, NOT inside a transforming shell). useKeyboardInset
    writes its `bottom` each visualViewport event, where
@@ -3519,7 +3519,7 @@ body.chat-locked {
    the safe-area-bottom padding; the overlay wrapper owns positioning only. */
 .chat-composer-overlay {
   position: fixed;
-  /* BOTTOM-ANCHOR (v4.1, Tom regression fix 2026-06-04). useKeyboardInset writes `bottom` to
+  /* BOTTOM-ANCHOR (v4.1, regression fix 2026-06-04). useKeyboardInset writes `bottom` to
      the keyboard gap (innerHeight − (offsetTop + vvHeight)); the default `bottom:0` keeps the
      composer flush at the screen bottom at rest AND degrades gracefully when there is no
      visualViewport (the hook never runs → it just sits at the bottom). No `top`, no transform,
@@ -3748,7 +3748,7 @@ body.chat-locked {
    artifacts sidebar scrolls independently). It reuses .cockpit-content--chat. */
 .cockpit-content--chat { max-width: none; }
 
-/* MOBILE-FIRST (base = phone, Tom 2026-06-03). The workspace is ONE full-width column;
+/* MOBILE-FIRST (base = phone, 2026-06-03). The workspace is ONE full-width column;
    the chat pane fills it and the "This session" rail lives in an off-canvas drawer (not
    beside the chat). Overflow-prevention by construction: border-box everywhere in the
    surface, min-width:0 so flex/grid text children can shrink, and a defensive
@@ -4255,7 +4255,7 @@ body.chat-locked {
 .artifact-diff-line.is-meta { color: var(--fg-subtle); }
 
 /* ---- Artifact review modal (rendered markdown + raw-diff toggle) -----------
-   Tom (2026-06-03): clicking a session-produced file opens this centered dialog with
+   Design note (2026-06-03): clicking a session-produced file opens this centered dialog with
    the file's RENDERED markdown (frontmatter as a calm key/value list, body via
    <SafeMarkdown>), a "Formatted | Raw diff" segmented toggle, X/Esc/click-backdrop
    close, and a scrollable body. Surface tokens match the .chat-artifact family + the
@@ -4511,7 +4511,7 @@ body.chat-locked {
 }
 .cmdk-option-enter { flex-shrink: 0; color: var(--accent-marker-text); }
 
-/* ---- Sub-agents dock (Tom's spec — bottom/sticky in "This session made") -- */
+/* ---- Sub-agents dock (spec — bottom/sticky in "This session made") -- */
 /* The foot sits OUTSIDE the scrolling artifacts body so dispatched subagents stay
    pinned in view while files/journal/tasks scroll. A top border + a slightly raised
    surface set it apart as the live-work shelf. */
@@ -4612,7 +4612,7 @@ body.chat-locked {
   color: var(--status-info); background: color-mix(in oklch, var(--status-info) 14%, transparent);
 }
 
-/* Tom #4 — "read more" clamp on a long subagent prompt. */
+/* Feedback #4 — "read more" clamp on a long subagent prompt. */
 .chat-subagent-detail-text.is-clamped {
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
@@ -4624,7 +4624,7 @@ body.chat-locked {
 .chat-readmore:focus-visible { outline: 2px solid var(--accent-marker); outline-offset: 2px; border-radius: 4px; }
 
 /* Per-subagent TOOL TIMELINE (Axon §2.3) — the tool chips that used to land on Larry's
-   main bubble now live here, attributed to the subagent that ran them (Tom #5). A compact
+   main bubble now live here, attributed to the subagent that ran them (feedback #5). A compact
    vertical list of tool rows with running/done/error icons, in call order. */
 .chat-tool-timeline { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .chat-tool-step {
@@ -4640,7 +4640,7 @@ body.chat-locked {
 .chat-tool-step-icon .is-spinning { animation: pin-rotate 760ms linear infinite; }
 
 /* ---- PROGRESS RAIL: slim thread marker + compact rail items (Axon §3) ------ */
-/* Tom #3: the thread shows only a slim "approval waiting →" marker; the action lives in
+/* Feedback #3: the thread shows only a slim "approval waiting →" marker; the action lives in
    the rail. The marker is amber-toned (warning = needs action) and docks under the turn. */
 .chat-approval-marker {
   display: inline-flex; align-items: center; gap: 7px; margin-left: 38px;
@@ -5686,7 +5686,7 @@ body.chat-locked {
 
 /* ---- Module shell + header ------------------------------------------------ */
 .stoic-view { max-width: 1100px; margin: 0 auto; padding: 8px 0 48px; }
-/* Header-less field view (Tom 2026-06-05): no header chrome, so the orrery owns
+/* Header-less field view (2026-06-05): no header chrome, so the orrery owns
    the full surface. Drop the field's old top margin (it offset from the removed
    header) so the rings sit visually centered in the viewport. */
 .stoic-view--field { padding-top: 0; }
@@ -5748,7 +5748,7 @@ body.chat-locked {
   animation: stoic-ring-spin var(--ring-dur) var(--stoic-rot-ease) infinite;
 }
 /* Visible orbit line — the concentric circle each ring of cards travels on
-   (Tom 2026-06-05: orrery/planetarium read). The ring element is a zero-size
+   (2026-06-05: orrery/planetarium read). The ring element is a zero-size
    point at center; this ::before draws a bordered circle of diameter 2·--ring-r
    centered on that point, so the cards sit exactly ON the line. A perfect circle
    is rotation-invariant, so riding the rotating ring element costs nothing and
@@ -5825,9 +5825,9 @@ body.chat-locked {
 
 .stoic-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Imageless fallback (Tom 2026-06-05: Silas's list now surfaces ALL Seneca-answered
+/* Imageless fallback (2026-06-05: the entry list surfaces ALL mentor-answered
    entries, many WITHOUT an image — the glyph card is now a common case, not an
-   edge). Give it an intentional brass-soft radial fill so a bildlose Karte reads as
+   edge). Give it an intentional brass-soft radial fill so an imageless card reads as
    a designed "reflection" token, not an empty disc. Tokens only: --accent-marker-soft fill,
    --accent-marker glyph. The mood border (set on .stoic-card) still rings it, so the
    mood signal survives even without a photo. */
@@ -5859,7 +5859,7 @@ body.chat-locked {
 }
 
 /* ---- §8.11.2 Card preview tooltip ---------------------------------------- */
-/* The hover/focus preview (Tom 2026-06-05: the old Stoic-Mentor card-hover
+/* The hover/focus preview (2026-06-05: the old mentor card-hover
    preview). Title + teaser (+ small date), normal UI text — NO wisdom-serif
    (that's quotes only, §3.4). One shared `position:fixed` node placed from the
    card's measured rect (clamp/flip done in JS), so it escapes the field's
@@ -5986,7 +5986,7 @@ body.chat-locked {
   font-variant-numeric: tabular-nums;
 }
 
-/* §8.11.3.3 — Seneca's perspective. One brass left-edge; serif ROMAN (mentor
+/* §8.11.3.3 — the mentor perspective. One brass left-edge; serif ROMAN (mentor
    speaking), distinct from §3.4 italic (quoting a source). */
 .stoic-persp {
   background: var(--stoic-persp-surface);
@@ -6181,7 +6181,7 @@ body.chat-locked {
    PLACEHOLDER (contain-intrinsic-size) for the skipped subtree. On a COLLAPSED
    branch that placeholder is exactly the bug: the grid track is 0fr but the
    reserved intrinsic height re-inflates the row, leaving a tall void before the
-   next bullet (Tom 2026-06-09). So: keep the perf skip ONLY while expanded; on a
+   next bullet (2026-06-09). So: keep the perf skip ONLY while expanded; on a
    collapsed branch force `content-visibility:visible` so NO intrinsic size is
    reserved and the 0fr track + overflow:hidden truly zero the height. */
 .wb-outliner-content li > ul { content-visibility: auto; }

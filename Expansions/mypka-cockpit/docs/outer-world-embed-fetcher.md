@@ -1,6 +1,6 @@
 # Outer World — capture-time embed fetcher
 
-Item 10 ("Outer World"): when Tom saves external content into his myPKA, the
+Item 10 ("Outer World"): when the user saves external content into their myPKA, the
 embed metadata is fetched **at capture time** (by the LLM/Larry, who has network
 access at save time) and stored in the note's **flat `embed_*` frontmatter**. The
 cockpit later renders a **static rich card OFFLINE** from that frontmatter — it
@@ -52,7 +52,7 @@ fetcher now removes both the need to authenticate and the temptation to browse.
 
 ## How the capture flow (Larry, at save time) invokes it
 
-This is the step the LLM performs when Tom saves a link as an Outer World note:
+This is the step the LLM performs when the user saves a link as an Outer World note:
 
 1. **Run the fetcher** against the saved URL, choosing a slug from the note title:
 

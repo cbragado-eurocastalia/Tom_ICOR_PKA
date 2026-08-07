@@ -22,7 +22,7 @@ These two files plus the seeded Journal entry are the SSOT demo the course walks
 
 ## Naming
 
-- Person: kebab-case of how the user refers to them. `dr-schmidt`, `maria-garcia`, `tom-roedl`.
+- Person: kebab-case of how the user refers to them. `dr-schmidt`, `maria-garcia`, `james-carter`.
 - Organization: kebab-case, with enough words to disambiguate. `dr-schmidt-clinic` rather than `clinic`.
 - See [[GL-001-file-naming-conventions]] for collision rules.
 

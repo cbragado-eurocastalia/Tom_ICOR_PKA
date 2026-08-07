@@ -1,6 +1,6 @@
 // CardDetailModal.tsx — the click-a-card detail view. ONE centered dialog renders
 // BOTH a task and a meeting/event detail, and is the SINGLE home for the "open in
-// source" affordance (which used to live inline on the card; moved here per Tom's
+// source" affordance (which used to live inline on the card; moved here by design
 // request so the card body is purely a click-target + drag-activator and carries no
 // nested interactive control).
 //

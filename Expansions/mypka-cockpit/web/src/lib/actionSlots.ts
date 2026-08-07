@@ -16,7 +16,7 @@
 //   its own data source and a `renderConnected` body. No restructure — the hub,
 //   the card chrome, the placeholder, the a11y, the layout all stay put.
 //
-//   PHASING (Tom-confirmed):
+//   PHASING (product-confirmed):
 //     PPM  -> Todoist          -> CONNECTED today. State derives from the existing
 //                                 /api/cockpit/tasks payload (ok:true === connected).
 //     BPM  -> ClickUp          -> not-connected. Next phase: ClickUp API token
@@ -36,7 +36,7 @@ export type SlotState =
   | { status: 'error'; message: string };
 
 // Static, source-of-truth metadata for each slot. The label + tool + the EXACT
-// placeholder string Tom specified ("No PPM Connected" etc.) live here so the
+// placeholder string the design specifies ("No PPM Connected" etc.) live here so the
 // three slots read uniformly and a new source is registered by adding one entry.
 export interface SlotDefinition {
   key: SourceKey;
@@ -46,7 +46,7 @@ export interface SlotDefinition {
   frame: string;
   // The external tool this source maps to (Todoist / ClickUp / Google Calendar).
   tool: string;
-  // Tom's exact not-connected heading. Uniform across all three.
+  // The exact not-connected heading. Uniform across all three.
   notConnectedTitle: string;
   // The calm connect hint shown under the heading in the not-connected state.
   connectHint: string;

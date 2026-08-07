@@ -334,7 +334,7 @@ export function getNeighborhood(type, slug, { depth = 2, cap = 12 } = {}) {
 // What's renderable here is WIDER than the note graph: an agent's links are
 // overwhelmingly Team-Knowledge (SOPs, Workstreams, Guidelines) and sibling
 // AGENTS — almost none are entity tables. Dropping all of those (the note-graph
-// rule) would leave a near-empty canvas, which is exactly the failure Tom hit
+// rule) would leave a near-empty canvas, which is exactly the failure reported
 // with the chip list. So this builder renders FOUR node kinds beyond the 10
 // entity tables — agents, sops, workstreams, guidelines — and marks each
 // node `clickable` HONESTLY by whether the cockpit has a view for it:

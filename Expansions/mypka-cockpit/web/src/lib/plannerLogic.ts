@@ -1,7 +1,7 @@
 // plannerLogic.ts — pure planner computations (no React, no DOM, fully testable).
 //
 //   * week math (Monday-start, weekday 0..6, ISO 'YYYY-MM-DD' day keys)
-//   * remainingWorkMinutes — the AM/PM PURE COUNTDOWN (Tom's decision: NO capacity
+//   * remainingWorkMinutes — the AM/PM PURE COUNTDOWN (product decision: NO capacity
 //     meter, NO per-task estimates — the timer is pure working-time-left). Drives
 //     Iris's .planner-timer [data-state=ample|low|elapsed].
 //   * settings defaults + normalization
@@ -153,7 +153,7 @@ export function defaultSettings(): PlannerSettings {
     work_hours,
     timezone: DISPLAY_TZ,
     lunch_break: { enabled: false, start: '12:00', end: '13:00' },
-    // Iris 20 §7 — default OFF: completions stay planner-local until Tom opts in.
+    // Iris 20 §7 — default OFF: completions stay planner-local until the user opts in.
     complete_on_source: false,
   };
 }
@@ -189,7 +189,7 @@ export function isWorkday(settings: PlannerSettings, wd: Weekday): boolean {
 
 // ---- AM/PM PURE COUNTDOWN ---------------------------------------------------
 // remainingWorkMinutes — minutes of WORKING TIME left in a given half today.
-// Tom's decision (README "Capacity = stack length"): this is a PURE countdown of
+// Product decision (README "Capacity = stack length"): this is a PURE countdown of
 // configured working time. There is NO capacity meter and NO per-task estimate —
 // the LENGTH of the card stack is the capacity signal, not this number.
 //

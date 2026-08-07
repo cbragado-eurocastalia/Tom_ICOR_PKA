@@ -14,7 +14,7 @@
 // PREVIEW vs EDITING (Obsidian live preview): when the caret does NOT touch the
 // link's range, the syntax parts (`[[`, `]]`, `slug|`) are hidden entirely
 // (cockpit.css sets display:none on .wb-wl-bracket/.wb-wl-prefix without
-// .is-editing) — Tom sees just "Dr. Schmidt" styled as a link. When the caret
+// .is-editing) — the user sees just "Dr. Schmidt" styled as a link. When the caret
 // (or any selection end) touches the range every part gets `.is-editing` and
 // the raw text reveals for editing. The doc text itself never changes — hiding
 // is pure CSS on decoration spans, so positions/round-trip stay exact.

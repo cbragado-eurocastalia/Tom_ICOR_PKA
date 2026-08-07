@@ -131,8 +131,8 @@ export function getLabs() {
     const sub = m[2];
     const table = parseTable(sub);
     const assessment = extractAssessment(sub);
-    // Text-only subsections (thyroid coverage-gap, Outlier flag, Coverage
-    // gaps, Cross-links) carry no table — capture their prose so the UI can
+    // Some subsections are text-only (a coverage gap, an outlier flag, a
+    // cross-link note) and carry no table — capture their prose so the UI can
     // render them as a calm note instead of an empty table.
     const note = table ? null : firstProse(sub);
     // v2: the full prose of the subsection, broken into readable blocks, for the
@@ -241,8 +241,8 @@ export function getOpenQuestions() {
     const lower = raw.toLowerCase();
     const answered = lower.includes('answered') || lower.includes('resolved');
     // 'überfällig' / 'frist' are German-language synonyms matched alongside the
-    // English terms (the reference health.md was authored in German). Harmless to
-    // keep for English-only notes; add your own language's terms if needed.
+    // English terms, so a German-language health note works out of the box.
+    // Harmless to keep for English-only notes; add your own language's terms.
     const overdue = lower.includes('overdue') || lower.includes('überfällig');
     const deadlineM = raw.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
     const deadline = (lower.includes('deadline') || lower.includes('frist')) && deadlineM
@@ -250,11 +250,11 @@ export function getOpenQuestions() {
     // v2: full item prose (the whole numbered entry incl. sub-bullets) as readable
     // blocks, with the leading bold title removed so the sheet doesn't repeat it.
     const bodyAfterTitle = titleM ? raw.replace(titleM[0], '').replace(/^[\s—:.-]+/, '') : raw;
-    // Attach a resolvable note link when the exam clearly maps to one (HNO, PKV/BMI,
-    // Knie). Match against the TITLE only — matching the whole body produced
-    // misleading links (a CV-consolidation item that merely *mentions* the HNO
-    // workup, a Divertikulitis item that mentions weight). A precise, sometimes-
-    // absent link beats a confident wrong one.
+    // Attach a resolvable note link when the exam clearly maps to one (see
+    // EXAM_NOTE_HINTS above). Match against the TITLE only — matching the whole
+    // body produces misleading links, because an item that merely *mentions*
+    // another workup would resolve to that workup's note. A precise,
+    // sometimes-absent link beats a confident wrong one.
     const note = firstResolvableExamNote(title);
     items.push({ num, title, text, answered, overdue, deadline, note, full: toReadableBlocks(bodyAfterTitle) });
   }

@@ -29,7 +29,7 @@ root `package.json` and `package-lock.json` mirror it.
 
 ### Changed
 
-- **Distribution: the Cockpit ships inside the myPKA scaffold again** (Tom
+- **Distribution: the Cockpit ships inside the myPKA scaffold again** (product
   ruling 2026-07-23). Every scaffold download carries this pack at
   `Expansions/mypka-cockpit/` (scaffold v5.1.0 and later); there is no
   standalone zip on the Expansion Packs page, no bucket object, and no catalog
@@ -37,7 +37,7 @@ root `package.json` and `package-lock.json` mirror it.
   described an intent that was never executed: no release pipeline, bucket
   object, or catalog row ever existed, so 1.3.0 was never distributed anywhere
   and no member migration concern exists.
-- **Source of truth consolidated into the scaffold repo** (Tom ruling
+- **Source of truth consolidated into the scaffold repo** (product ruling
   2026-07-23, train 3). Cockpit source now lives directly in `myICOR/myPKA` at
   `Expansions/mypka-cockpit/` — this folder IS the live source, not a synced
   copy. The historical `myICOR/mypka-cockpit` repo is archived as read-only

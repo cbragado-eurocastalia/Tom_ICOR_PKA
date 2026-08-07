@@ -437,7 +437,7 @@ export interface MyLifeEdgesResponse {
 
 // ---------------------------------------------------------------------------
 // Type-first drill-down EXPLORER (server/mylife.js — getMyLifeBucket).
-// The corrected model (2026-06-03, Tom's review): 5 fixed "concept type" nodes
+// The corrected model (2026-06-03, design review): 5 fixed "concept type" nodes
 // across the top (Key Elements · Projects · Goals · Topics · Habits). Click a
 // type → its members fan DOWN; click a member → its neighborhood (reuses the
 // /graph/neighborhood/:type/:slug contract). Deterministic incremental layout;

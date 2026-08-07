@@ -21,7 +21,7 @@
 --
 -- The `position` column is ALREADY REAL (migration 001), so this migration adds
 -- NO column and changes NO type. It only REBASES the existing real-data rows so
--- the new unified space PRESERVES TOM'S CURRENT VISUAL ORDER on first load.
+-- the new unified space PRESERVES THE USER'S CURRENT VISUAL ORDER on first load.
 --
 -- ---------------------------------------------------------------------------
 -- THE REBASE (the only data change here).
@@ -37,7 +37,7 @@
 -- `position` order, to 1440, 1441, 1442, ... (stride 1, starting at the
 -- EVENT_FLOOR of 1440). Result: every pre-existing task stays in the same
 -- relative order it has today AND stays below every event (events live in
--- 0..1439), so Tom sees ZERO reordering of his existing plan after the upgrade.
+-- 0..1439), so the user sees ZERO reordering of their existing plan after the upgrade.
 -- New drops made AFTER the upgrade can place a task anywhere in the 0..1439
 -- event band (above / between / below events) as intended.
 --

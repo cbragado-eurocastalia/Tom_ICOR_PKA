@@ -13,7 +13,7 @@
 //   Plus: the glow FeatureCollection is fetched once and drawn as a single GeoJSON
 //   layer; selecting a workout only re-draws the one highlighted line.
 //
-// THREE REFINEMENTS (2026-06-02, Felix, Tom request):
+// THREE REFINEMENTS (2026-06-02, Felix, product request):
 //   1. SELECTION CONTRAST. The selected route renders in --status-info (cool steel
 //      blue, GL-003 §2.4) — deliberately cool against the warm brass glut-glow so it
 //      pops. Thicker (weight 5) with a colour-matched glow halo (canvas shadowBlur,
@@ -100,7 +100,7 @@ function BasemapLayer({ url, flavor }: { url: string; flavor: string }) {
 
 // ---- Ember glow: all/filtered routes as additive low-opacity polylines -------
 // Drawn with ONE shared canvas renderer. Low opacity means overlapping tracks
-// stack into a brighter "ember" where Tom runs often — Strava-glut, dependency-
+// stack into a brighter "ember" where routes overlap — Strava-glut, dependency-
 // free. v2 (leaflet.heat) can later derive a point cloud from the same data; this
 // layer is deliberately forward-compatible (Pax §4).
 function GlowLayer({
@@ -246,7 +246,7 @@ function FullscreenResizer({ active }: { active: boolean }) {
   return null;
 }
 
-// Compute an overall bbox for the whole (filtered) set so the map frames Tom's
+// Compute an overall bbox for the whole (filtered) set so the map frames the user's
 // routes on first paint even before a single one is selected.
 function overallBbox(workouts: WorkoutSummary[]): [number, number, number, number] | null {
   let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;

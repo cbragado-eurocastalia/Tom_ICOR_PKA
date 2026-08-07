@@ -185,7 +185,7 @@ export function PlannerView() {
   // pending, so `cal === null` is the LOADING window (render nothing — no warning).
   // `cal.ok` is CONNECTED. Only a settled non-ok response (`cal !== null && !cal.ok`)
   // is genuinely NOT connected — the ONLY state allowed to show the warning. The
-  // regression Tom saw was the warning flashing on every empty lane during the ~1s
+  // the regression seen was the warning flashing on every empty lane during the ~1s
   // fetch window; gating on a SETTLED non-ok response removes it entirely while a
   // valid feed (ok:true, 6 events) is configured.
   const calendarStatus: 'loading' | 'connected' | 'disconnected' =
@@ -247,7 +247,7 @@ export function PlannerView() {
     [unscheduled, weeklyGoalKeys],
   );
 
-  // Iris 20 §5 (Tom 2026-06-03): the pinned Weekly Goals section now lists the FULL
+  // Iris 20 §5 (2026-06-03): the pinned Weekly Goals section now lists the FULL
   // roster — the unscheduled pool (above) AND the goals already placed on a day. A
   // placed goal already exists on the board as a draggable highlight card with the same
   // dnd-kit id, so it must render here as a STATIC ledger row OUTSIDE the SortableContext
@@ -396,7 +396,7 @@ export function PlannerView() {
     //     BEFORE the over-card, i.e. at its self-excluded index = indexOf(overKey).
     // Without the direction term a DOWNWARD same-lane drag always inserted BEFORE the
     // lower sibling — but the card already sat above it, so the position never changed
-    // and a reorder among tasks was impossible (Tom's "within the column doesn't work").
+    // and a reorder among tasks was impossible (reported: "within the column doesn't work").
     let insertFull: number;
     if (!overIsCard) {
       insertFull = fullIds.length; // over the bare lane → append
@@ -1107,7 +1107,7 @@ export function PlannerView() {
             carries the live `translate3d` follow transform. Its computed `transition`
             currently inherits `all` — inert today (0s duration) but fragile: a non-zero
             duration anywhere up the cascade would make `transform` transition and the
-            follow would rubber-band (the sluggishness Tom flagged). The inline
+            follow would rubber-band (the sluggishness that was flagged). The inline
             style={{ transition: 'none' }} below locks transform out of any transition
             on the wrapper during the 1:1 follow. The drop-settle is dropAnimation
             (release-time), untouched by this. */}

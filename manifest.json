@@ -1,8 +1,8 @@
 {
   "_about": "This is the single source of truth (SSOT) for the myPKA scaffold version and for the framework/user-state seam. The scaffold version lives HERE, authoritatively. VERSION and .scaffold-version are kept for back-compat with older tooling, but they mirror this file; if they ever disagree, manifest.json wins. The framework_paths and user_state_paths blocks are machine-readable: the updater (scripts/update-scaffold.py) reads them to decide which files it MAY overwrite (framework, ours, upgradable) and which it must NEVER touch (user state, yours, sacred). Markdown is canonical; this JSON is the control plane that lets the folder update itself safely.",
-  "scaffold_version": "5.4.0",
-  "released": "2026-07-28",
-  "from": "5.3.0",
+  "scaffold_version": "5.5.0",
+  "released": "2026-08-08",
+  "from": "5.4.0",
   "breaking": false,
   "distribution": {
     "_about": "Who published THIS copy of the scaffold. The official myICOR release sets id 'myICOR/myPKA' and is_official_myicor_release true. Anyone distributing a derivative (permitted under CC BY-SA 4.0, see DERIVATIVES.md) MUST set their own id, set is_official_myicor_release to false, and record the upstream version they derived from in derived_from. This block is the provenance record: it is what tells a version check, an updater, and a human reading the folder whose release this is. It carries no telemetry and is never transmitted.",
@@ -83,7 +83,7 @@
     ]
   },
   "update_check": {
-    "_about": "Configuration for the boot-time version check (scripts/check-version.py). ANNOUNCED-ON by default per Tom's decision. The boot-time call is the ONLY network reach in the update core. It SENDS NO USER DATA: it fetches a single remote version string over HTTPS, read-only, and fails silent when offline. It reports back to the member, in one line, if a newer scaffold version exists. It never auto-applies anything.",
+    "_about": "Configuration for the boot-time version check (scripts/check-version.py). ANNOUNCED-ON by default per product decision. The boot-time call is the ONLY network reach in the update core. It SENDS NO USER DATA: it fetches a single remote version string over HTTPS, read-only, and fails silent when offline. It reports back to the member, in one line, if a newer scaffold version exists. It never auto-applies anything.",
     "enabled": true,
     "upstream_repo": "myICOR/myPKA",
     "remote_version_url": "https://raw.githubusercontent.com/myICOR/myPKA/main/VERSION",
@@ -93,47 +93,102 @@
     "disclosure": "On boot, myPKA fetches one version string from the official myPKA repository (myICOR/myPKA) to tell you if an update exists. That request sends no data about you or your vault. It is read-only and fails silently if you are offline. Set update_check.enabled to false to turn it off."
   },
   "changes": {
-    "_about": "Per-path change record for THIS release (5.3.0 -> 5.4.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.4.0: derivative readiness. v5.3.0 made derivatives legal (CC BY-SA 4.0); 5.4.0 makes them safe to actually build. New DERIVATIVES.md states the general rules for building and distributing your own version, including the one that cannot be undone (derive from v5.3.0 or later, because a fork of a pre-v5.3.0 copy is locked to NonCommercial permanently). New SECURITY.md gives the scaffold a private vulnerability-reporting path. New distribution block records who published this copy. update_check gains an explicit derivative rule and names the upstream repository in its disclosure. Version drift repaired: the cockpit's declared expansion_yaml_version was stale at 1.2.1 and now reads 1.5.2, the cockpit released alongside this scaffold. IMPORTANT: this changes-paths list is deliberately limited to paths on the framework_paths allow-list. Expansions/docs/expansion-spec.md also changed in this release but is NOT listed, because it matches the user_state glob Expansions/*/** and the updater fails closed on any refused path. That is correct behaviour of a real safety gate rather than a bug: Expansions/*/** is where a member's installed Expansion state lives. The spec is an authoring contract that binds pack authors at authoring time, which is a fetch-fresh moment, so non-reach carries no consequence for members. The compliance-relevant content is in LICENSE-MAP.md and DERIVATIVES.md, both root files, both listed here.",
+    "_about": "Per-path change record for THIS release (5.4.0 -> 5.5.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.5.0: a privacy fix. Personal context belonging to the scaffold's author shipped inside the released template from v3.0.0 onward and was reported privately by a member. The Cockpit's health dashboard carried hardcoded plan strings and threshold comments describing one specific person's medical situation, and the install-time personalization pass could rewrite the author's name to the installing member's, which re-attributed that content to them and removed the only clue it was not theirs. This release strips the author's personal context and roughly 100 name mentions across 45 files, scopes the personalization rule so it can never touch source code, fixes weekly-report edition numbering (which hardcoded the author's own edition 28 as an anchor and implied ~31 back-issues a new member never had), and adds scripts/check-no-personal-data.py plus a privacy-guard workflow as the gate that should have caught it. Releases v3.0.0 through v5.4.0 are withdrawn.",
     "paths": [
       {
-        "path": "DERIVATIVES.md",
-        "change_type": "added",
-        "note": "New. The general rules for building and distributing your own version of myPKA: the v5.3.0 version seam, the six CC BY-SA obligations, the Cockpit exclusion, what sits outside the scaffold licence entirely, the platform-terms trap, the mandatory update_check re-point, and official-pack support on renamed derivatives."
+        "path": "Expansions/mypka-cockpit/web/src/lib/status.ts",
+        "change_type": "changed",
+        "note": "Author's medical context removed: hardcoded plan strings (insurance scheme, dated personal target, outstanding specialist referral) and threshold comments naming an age. Reference ranges are now general published guidance. BETTER_WHEN.weight -1 -> null, because weight has no clinically correct direction without context."
       },
       {
-        "path": "SECURITY.md",
+        "path": "Expansions/mypka-cockpit/server/markdown.js",
+        "change_type": "changed",
+        "note": "Code comments naming specific medical conditions replaced with a pointer to the EXAM_NOTE_HINTS env var, which was already the configurable, empty-by-default mechanism."
+      },
+      {
+        "path": "Expansions/mypka-cockpit/web/src/sections/Planned.tsx",
+        "change_type": "changed",
+        "note": "Comment naming specific medical projects replaced with a pointer to EXAM_NOTE_HINTS."
+      },
+      {
+        "path": "AGENTS.md",
+        "change_type": "changed",
+        "note": "The Personalization section no longer names a person as an example stand-in, and now states that addressing the user by name governs conversation only and is never a licence to edit files. Writing or rewriting a person's name inside source code is forbidden."
+      },
+      {
+        "path": "ADAPTER-PROMPT.md",
+        "change_type": "changed",
+        "note": "Step 4 gains two explicit rules: substitute the {{USER_NAME}} token and nothing else, and never edit source code during personalization."
+      },
+      {
+        "path": "scripts/check-no-personal-data.py",
         "change_type": "added",
-        "note": "New. Supported versions, the private reporting channel, coordinated-disclosure expectations, scope, and the standing release-blocking distribution rules (BYO-key, secrets by reference, local-only network posture)."
+        "note": "New. Release gate scanning for maintainer personal data (names, insurance-scheme markers, named conditions, ages, outstanding-referral phrasing). Exits non-zero with file:line per finding."
+      },
+      {
+        "path": ".github/workflows/privacy-guard.yml",
+        "change_type": "added",
+        "note": "New. Runs the personal-data scan on every push and pull request with no path filter. Intended as a required status check on main."
+      },
+      {
+        "path": ".github/workflows/release-scaffold.yml",
+        "change_type": "changed",
+        "note": "The cockpit job runs the personal-data scan against the release artifact before any other guard, so a tag pushed from a stale branch cannot publish a leak."
+      },
+      {
+        "path": "Team Knowledge/scripts/weekly-report-render.py",
+        "change_type": "changed",
+        "note": "edition_no() no longer hardcodes the author's edition 28 anchor; numbering derives from your own first filed edition and starts at 1. Pin an existing series with WEEKLY_REPORT_EDITION_ANCHOR=\"YYYY-MM-DD:N\". Private-vault provenance comments and dangling SOP/GL references removed; is_zenon renamed is_reflection."
+      },
+      {
+        "path": "Team Knowledge/scripts/weekly-report-gather.py",
+        "change_type": "changed",
+        "note": "The reflection-entry detector no longer matches the author's private specialist slug; it matches generic slug markers and is documented as adjustable."
+      },
+      {
+        "path": "Team Knowledge/scripts/weekly-reports-nav.py",
+        "change_type": "changed",
+        "note": "Dangling references to guidelines and SOPs that never ship removed."
+      },
+      {
+        "path": "Team Knowledge/scripts/weekly-report-assets/deck.css",
+        "change_type": "changed",
+        "note": "Provenance comments naming the author's own edition removed; dangling guideline citations generalised."
+      },
+      {
+        "path": "Team Knowledge/scripts/weekly-report-assets/deck.js",
+        "change_type": "changed",
+        "note": "Provenance comments naming the author's own edition removed."
+      },
+      {
+        "path": "Team Knowledge/Guidelines/GL-002-frontmatter-conventions.md",
+        "change_type": "changed",
+        "note": "The iso_week worked example no longer cites a real edition from the author's vault."
       },
       {
         "path": "manifest.json",
         "change_type": "changed",
-        "note": "scaffold_version 5.3.0 -> 5.4.0; new distribution block (provenance: id, publisher, is_official_myicor_release, derived_from); DERIVATIVES.md and SECURITY.md added to framework_paths.globs so they reach existing folders and not only fresh downloads; cockpit expansion_yaml_version corrected 1.2.1 -> 1.5.2; update_check gains upstream_repo and derivative_rule, and the disclosure names the upstream repository."
-      },
-      {
-        "path": "scripts/update-scaffold.py",
-        "change_type": "changed",
-        "note": "Root-containment guard now resolves symlinks on BOTH sides (realpath of the root and of the candidate path) instead of normpath, which collapses '..' but follows symlinks. Listed here so the hardened guard reaches existing folders and not only fresh downloads: a security fix to the updater that the updater does not deliver is the propagation trap this release exists to close. Resolving both sides is what keeps it from over-refusing; resolving only the candidate would deny every update to members on macOS /tmp or a symlinked home."
-      },
-      {
-        "path": "Expansions/.trusted-sources",
-        "change_type": "changed",
-        "note": "Adds the mypka-cockpit@1.5.2 pin. Listed here so existing folders receive it on update; without the new pin an installed cockpit 1.5.2 would not match any trusted hash. The 1.5.1 pin is retained and unchanged, so correctly-installed 1.5.1 cockpits keep verifying."
+        "note": "scaffold_version 5.4.0 -> 5.5.0; changes block rewritten for this release."
       },
       {
         "path": "VERSION",
         "change_type": "changed",
-        "note": "5.3.0 -> 5.4.0 (mirror of manifest)."
+        "note": "5.4.0 -> 5.5.0 (mirror of manifest)."
       },
       {
         "path": ".scaffold-version",
         "change_type": "changed",
-        "note": "5.3.0 -> 5.4.0 (mirror of manifest)."
+        "note": "5.4.0 -> 5.5.0 (mirror of manifest)."
       },
       {
         "path": "CHANGELOG.md",
         "change_type": "changed",
-        "note": "Prepended the [5.4.0] entry."
+        "note": "Prepended the [5.5.0] entry."
+      },
+      {
+        "path": "SECURITY.md",
+        "change_type": "changed",
+        "note": "Supported-versions table moved to the 5.5.0 line; v3.0.0 through v5.4.0 marked withdrawn."
       }
     ]
   },

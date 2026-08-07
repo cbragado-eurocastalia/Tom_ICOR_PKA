@@ -195,7 +195,7 @@ export function UnscheduledSidebar({
               weekly goals. Dragging one onto a day = placed + still a weekly goal → a
               highlight automatically; dragging back here returns it to this pool. */}
           {(() => {
-            // Iris 20 §5 (Tom 2026-06-03): the section now lists the FULL roster — the
+            // Iris 20 §5 (2026-06-03): the section now lists the FULL roster — the
             // unscheduled DRAGGABLE pool (pinnedGoals, inside the SortableContext via
             // sortIds) AND the PLACED static ledger rows (placedGoals, NOT in sortIds —
             // so no duplicate dnd-kit id; their draggable twins live on the board). The

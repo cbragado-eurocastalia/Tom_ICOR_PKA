@@ -382,7 +382,7 @@ function shapeMedia(journalId, metadata) {
       caption: r.caption || null,
     });
   }
-  // Voice entries carry the rendered Seneca audio under frontmatter `source`
+  // Voice entries carry the rendered reflection audio under frontmatter `source`
   // (a PKM/-prefixed .mp3, e.g. "PKM/Audio/2025/08/…-stoic-mentor-….mp3"). We
   // surface a ready-to-play descriptor so Felix's <audio> needs ZERO knowledge of
   // the prefix quirk: `path` is the route-correct prefix-free relative path, and

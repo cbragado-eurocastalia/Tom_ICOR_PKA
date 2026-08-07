@@ -54,7 +54,7 @@ const MOTION_OK =
 
 const FIT_DURATION = MOTION_OK ? 520 : 0; // --graph-fit-duration, gated
 
-// Default framing zoom (Tom 2026-06-03). The entrance no longer fitView-zooms-out
+// Default framing zoom (2026-06-03). The entrance no longer fitView-zooms-out
 // to fit every node (visually weak); instead it CENTERS on the Gen-0 focus node at
 // this standard zoom so the focus renders at its natural readable size mid-panel and
 // neighbors extend outward off-frame. 1.0 = the focus node draws at its token width
@@ -509,7 +509,7 @@ function CanvasInner({ data, expanded, onExpand }: CanvasInnerProps) {
         // callbacks. nodesFocusable (above) stays true so Enter/Space nav survives.
         // Net: dragging anywhere — over edges, over nodes, over empty pane — pans.
         elementsSelectable={false}
-        // Wheel = zoom the graph (Tom 2026-06-03), NOT pan/scroll. zoomOnScroll is the
+        // Wheel = zoom the graph (2026-06-03), NOT pan/scroll. zoomOnScroll is the
         // RF default; pinned explicitly here so a later default change can't silently
         // disable it. panOnScroll OFF so the wheel is unambiguously a zoom gesture.
         panOnScroll={false}
@@ -517,7 +517,7 @@ function CanvasInner({ data, expanded, onExpand }: CanvasInnerProps) {
         minZoom={0.25}
         maxZoom={2}
         proOptions={{ hideAttribution: true }}
-        // NO `fitView` prop — that would zoom-out-to-fit on mount (the framing Tom
+        // NO `fitView` prop — that would zoom-out-to-fit on mount (the framing that was
         // rejected). onInit centers on the focus at DEFAULT_ZOOM instead.
       >
         <Background variant={BackgroundVariant.Dots} gap={28} size={1} className="mg-bg" />

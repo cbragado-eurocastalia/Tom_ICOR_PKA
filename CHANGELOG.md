@@ -2,6 +2,39 @@
 
 All notable changes to the myPKA scaffold are tracked here. Versions follow semver: MAJOR for breaking structural changes, MINOR for additions, PATCH for fixes.
 
+## [5.5.0] - 2026-08-08
+
+**Privacy fix: the scaffold no longer carries anything about its author.** A member auditing their own installation found personal context belonging to the scaffold's author shipped inside the released template, and reported it privately instead of opening an issue. The report was accurate. This release removes what they found, plus everything of the same kind that a full sweep turned up afterwards, and adds the check that should have caught it.
+
+**If you run the Cockpit, its health dashboard may have shown you a care plan that was never yours.** It is gone. After updating, rebuild the Cockpit web bundle; the dashboard then reads from your own Apple Health data only.
+
+### Fixed
+
+- **The author's personal context is removed from the Cockpit.** `Expansions/mypka-cockpit/web/src/lib/status.ts` carried hardcoded `plan` strings and threshold comments describing one specific person's medical situation: an insurance scheme, a dated personal target, an outstanding specialist referral, and an approximate age. Those strings rendered on the health dashboard as though they were the installing member's own plan. Every reference range in that file is now general published guidance (WHO BMI cut-points, standard SpO₂ and resting-heart-rate bands), and every `plan` string is generic. The same class of content is removed from `server/markdown.js` and `web/src/sections/Planned.tsx`, where code comments named specific medical conditions.
+- **The weight trend no longer assumes a direction.** `BETTER_WHEN.weight` was `-1`, meaning "down is better", because down was the author's goal. Weight has no clinically correct direction without context, which that file's own comment already said, so it is now `null` and the weight trend reads as informational rather than as progress against a target you never set.
+- **Roughly 100 mentions of the author by name are removed** across 45 files, most of them Cockpit code comments attributing design decisions. Decisions are now attributed to the decision, and runtime behaviour to "the user".
+- **Weekly report editions start at 1.** `edition_no()` hardcoded the author's own edition 28 (2026-07-10) as an anchor and derived every later number by week offset, so a fresh install's first edition was numbered in the low thirties and implied about 31 back-issues that never existed. That number reached the frontmatter, the page heading and the archive. Numbering now derives from your own first filed edition. An existing series can be pinned with `WEEKLY_REPORT_EDITION_ANCHOR="YYYY-MM-DD:N"`.
+- **Dangling references to documents that never shipped are removed** from the weekly-report scripts and deck assets. They pointed at guidelines, SOPs and specialists that exist only in the author's private vault.
+
+### Security
+
+- **The install-time personalization could silently re-attribute the author's content to you.** The root `AGENTS.md` instructed the installing agent never to address the user as a third party, and named the author's first name as an example of a stand-in to avoid. That instruction carried no file-type scope, so an agent could reasonably find-and-replace the literal name across the entire folder, including into `.ts` source where the name was authorship rather than a placeholder. The effect was that the author's design decisions, and the health content described above, appeared under the installing member's own name, and the substitution removed the only clue that the content was not theirs.
+
+  The sanctioned substitution has always been the `{{USER_NAME}}` token in `.md`, `.yaml`, `.yml` and `.txt` files only. `AGENTS.md` and `ADAPTER-PROMPT.md` now state that explicitly and forbid writing, or rewriting, a person's name inside source code for any reason.
+
+### Added
+
+- **`scripts/check-no-personal-data.py`**, a release gate that scans the tree for maintainer personal data: personal names as standalone words, insurance-scheme markers, named medical conditions, ages, and outstanding-referral phrasing. It exits non-zero and prints `file:line` for every finding. Legitimate uses, such as the formal authorship credit and historical figures quoted in sample content, are exact-string exceptions rather than widened patterns.
+- **`.github/workflows/privacy-guard.yml`**, which runs that scan on every push and every pull request with no path filter, and is intended to be a required status check on `main`. The same scan also runs inside the release pipeline against the artifact, so a tag pushed from a stale local branch cannot publish a leak that the branch check never saw.
+
+  The check that existed before this looked for unreplaced `{{USER_NAME}}` tokens. It was green the whole time, because the token really was absent while the literal name was present. A guard whose passing state is reachable without the thing being true is worse than no guard, because its green prevents the check a missing guard would have prompted.
+
+### Removed
+
+- **Releases v3.0.0 through v5.4.0 are withdrawn** and their download assets deleted, because every one of them shipped the content described above. Update to 5.5.0.
+
+---
+
 ## [5.4.0] - 2026-07-28
 
 **Derivative readiness.** v5.3.0 made your own version of myPKA legal. This release makes it safe to actually build one, and gives the scaffold the two files a public project is expected to have: `DERIVATIVES.md` and `SECURITY.md`. Nothing moves, nothing breaks, and no action is required of you unless you are distributing a derivative.
@@ -329,7 +362,7 @@ This is a visual-only release: there are no structural changes to the scaffold, 
 
 - **A machine-readable `manifest.json` at the scaffold root: the new version SSOT and the framework/user-state seam as data.** It declares `scaffold_version` (now authoritative), `framework_paths` (the allow-list of files the updater MAY overwrite), and `user_state_paths` (the sacred list the updater will NEVER write). Every fact about "what is ours vs. what is yours" now lives in one inspectable file instead of in tribal knowledge.
 - **A one-command updater: `/update-scaffold` (and the portable trigger "update myPKA"), backed by a plain script `scripts/update-scaffold.py`.** The script is python3 stdlib only (no pip, no npm) so it runs without an LLM. It diffs only `framework_paths`, prints a plain-English plan ("3 new SOPs, 1 changed guideline, 0 of your files touched"), is **dry-run by default**, applies only on `--apply`, **backs up any locally modified framework file to `.mypka/backups/<timestamp>/` before overwriting** (never a silent overwrite of your edit), refuses to write outside `framework_paths`, and is fully offline-safe and fail-closed.
-- **A boot-time update notification: `scripts/check-version.py`.** Announced-on by default (Tom's decision). It is the only network reach in the update core: it fetches a single version string over HTTPS, read-only, **sends no data about you or your vault**, fails silently offline, and prints one line only when a newer version exists. It never downloads or applies anything. Disclosed in the script header and in `manifest.json` under `update_check`; turn it off with `update_check.enabled: false`.
+- **A boot-time update notification: `scripts/check-version.py`.** Announced-on by default (a product decision). It is the only network reach in the update core: it fetches a single version string over HTTPS, read-only, **sends no data about you or your vault**, fails silently offline, and prints one line only when a newer version exists. It never downloads or applies anything. Disclosed in the script header and in `manifest.json` under `update_check`; turn it off with `update_check.enabled: false`.
 - **A separable cockpit-code update path.** The Cockpit (and every Expansion) is versioned on its own `expansion.yaml` SemVer, not on the scaffold version. The scaffold updater detects a behind cockpit and **defers** to the cockpit's own updater instead of touching Expansion code. The cockpit updater lifecycle is specified in `Expansions/mypka-cockpit/scripts/UPDATE-COCKPIT.md` (marked clearly as a SPEC: the working updater plus versioned DB migrations are still to be built and security-reviewed before they ship).
 - **The new `model:` frontmatter field** (Silas is adding it to `GL-002` in parallel). This records which model an agent contract was authored/validated against, supporting the LLM-agnostic posture below. Reference `GL-002` for the field's authoritative definition.
 - **The LLM-agnostic portable-core / adapter rule, plus an agnosticism audit** (Nolan and Silas are adding the Guideline and the audit Workstream in parallel). The portable core is the model-neutral contract; the adapter layer (for example `ADAPTER-PROMPT.md` and the `.claude/` shims) is where a specific host binds. Reference the new Guideline and the audit once landed.
@@ -613,7 +646,7 @@ Wires v1.10.0's task system and journal SOPs into the agent contracts. v1.10.0 s
 
 ### Changed
 
-- `Team/Larry - Orchestrator/AGENTS.md` — adds `## Session boot — task-walk first` before `## Three duties`. Larry now walks `Team Knowledge/tasks/open/` + `tasks/in-progress/` per [[SOP-list-open-tasks]] at every session boot and surfaces open priority-1 / in-progress / blocked / stale items in the greeting. Tom no longer has to ask "what's open?" — the team picks up where it left off automatically.
+- `Team/Larry - Orchestrator/AGENTS.md` — adds `## Session boot — task-walk first` before `## Three duties`. Larry now walks `Team Knowledge/tasks/open/` + `tasks/in-progress/` per [[SOP-list-open-tasks]] at every session boot and surfaces open priority-1 / in-progress / blocked / stale items in the greeting. The user no longer has to ask "what's open?" — the team picks up where it left off automatically.
 - `Team/Larry - Orchestrator/AGENTS.md` — Duty 1 step 4 (Brief) now requires Larry to create a task via [[SOP-create-task]] before delegating any work that won't finish in-turn, populating all six `linked_*` arrays. The specialist resumes from the task file, not from chat scrollback.
 - All 8 specialist AGENTS.md (Nolan, Pax, Penn, Mack, Silas, Charta, Pixel, Iris) — adds a shared `## Task discipline (v1.10.1)` section right after the agent's "When Larry routes to <Name>" section. The block wires three behaviors at dispatch:
   1. Read your `linked_journal_entries` and the matching files in `Team/<your-name>/journal/` per [[SOP-read-own-journal]] before starting work. Auditable via a `## Updates` line that names the priors you carried.
@@ -695,17 +728,17 @@ The contract: **two layers, never three.** The wiki contract at `Team/<Name>/AGE
 
 ## [1.8.2] - 2026-05-09
 
-**Personalization placeholder + Tom-stand-in cleanup.** The scaffold's user-stand-in mentions of "Tom" are replaced with `{{USER_NAME}}` placeholder tokens. `ADAPTER-PROMPT.md` now captures the user's first name on first activation and substitutes the placeholder across the scaffold, saving the value to `PKM/.user.yaml` for future reference. Authorship credits ("Tom builds the system from scratch" video walkthrough) keep the formal name "Dr. Thomas Rödl". App Developer Pack `BUILD-NOTES.md` swept the same way.
+**Personalization placeholder + author-stand-in cleanup.** The scaffold's user-stand-in mentions of the author's first name are replaced with `{{USER_NAME}}` placeholder tokens. `ADAPTER-PROMPT.md` now captures the user's first name on first activation and substitutes the placeholder across the scaffold, saving the value to `PKM/.user.yaml` for future reference. Authorship credits (the "builds the system from scratch" video walkthrough) keep the formal name "Dr. Thomas Rödl". App Developer Pack `BUILD-NOTES.md` swept the same way.
 
 ### Changed
 
-- `Team/Larry - Orchestrator/AGENTS.md` — "Tom double-clicks `start.command`" → "{{USER_NAME}} double-clicks `start.command`".
-- `Team Knowledge/session-logs/_template.md` — example follow-up items "Tom reviews v1" → "{{USER_NAME}} reviews v1".
-- `Team Knowledge/Workstreams/WS-003-install-an-expansion.md` — "Tom-approved canonical exception" → "Pre-canonicalized exception".
-- `README.md`, `WAY-FORWARD.md` — "Tom builds the system" → "Dr. Thomas Rödl builds the system" (formal authorship credit).
+- `Team/Larry - Orchestrator/AGENTS.md` — "the user double-clicks `start.command`" → "{{USER_NAME}} double-clicks `start.command`".
+- `Team Knowledge/session-logs/_template.md` — example follow-up items "the user reviews v1" → "{{USER_NAME}} reviews v1".
+- `Team Knowledge/Workstreams/WS-003-install-an-expansion.md` — "pre-approved canonical exception" → "Pre-canonicalized exception".
+- `README.md`, `WAY-FORWARD.md` — "the author builds the system" → "Dr. Thomas Rödl builds the system" (formal authorship credit).
 - `ADAPTER-PROMPT.md` — new step 4: detect `{{USER_NAME}}` placeholders, ask user for first name, substitute across the scaffold, save to `PKM/.user.yaml`. Report-back template adds a `PERSONALIZATION` field.
 - `AGENTS.md` — new "Personalization" section codifies the substitution rule for future content (e.g., Expansions that ship with `{{USER_NAME}}` tokens).
-- App Developer Pack 1.0.1 `BUILD-NOTES.md` — swept "Tom" stand-ins to "the user" / "the maintainer".
+- App Developer Pack 1.0.1 `BUILD-NOTES.md` — swept author stand-ins to "the user" / "the maintainer".
 - `VERSION` 1.8.1 → 1.8.2.
 
 ### Notes

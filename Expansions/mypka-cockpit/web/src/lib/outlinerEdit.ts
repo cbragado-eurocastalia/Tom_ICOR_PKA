@@ -5,7 +5,7 @@
 // implements Enter / Backspace / Delete so they match canonical outliners
 // (Workflowy / Tana / Logseq / Roam), replacing TipTap's default splitListItem /
 // joinBackward — those defaults produce the "Enter steals children" bug
-// (Tom 2026-06-09) because they ignore the node's collapsed state and re-parent
+// (2026-06-09) because they ignore the node's collapsed state and re-parent
 // the trailing child bulletList onto the newly-created node.
 //
 // THE GOVERNING RULE (Pax §summary, rec 2): a newly-created node is ALWAYS born

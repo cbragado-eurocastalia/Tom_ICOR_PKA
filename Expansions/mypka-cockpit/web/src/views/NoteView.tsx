@@ -120,7 +120,7 @@ export function NoteView({ route }: { route: Extract<Route, { name: 'resolve' | 
               {note.media.audioCount} audio recording{note.media.audioCount > 1 ? 's' : ''} linked (not played).
             </p>
           )}
-          {/* Mini-graph — Tom's call (option B): full-content-width, in the MAIN
+          {/* Mini-graph — product decision (option B): full-content-width, in the MAIN
               reading column directly below the rendered note body (the body's
               "Related" tail). NOT in the right rail. The rail's "What links here" /
               "Links to" cards stay untouched as the non-visual text fallback (§8.9).

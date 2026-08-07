@@ -190,7 +190,7 @@ function ExamRow({ q }: { q: OpenQuestion }) {
           <p className="mt-[2px] line-clamp-2 text-caption leading-relaxed text-fg-muted">{q.text}</p>
         )}
         <div className="flex flex-wrap items-center gap-md">
-          {/* If the exam maps to a real note (HNO project, PKV/BMI project, …),
+          {/* If the exam maps to a real note (see EXAM_NOTE_HINTS server-side),
               offer a click into the actual plan; otherwise the full text opens in
               the Sheet — the honest fallback for text-only items. */}
           {q.note && <OpenNoteLink note={q.note} label="Go to case" />}

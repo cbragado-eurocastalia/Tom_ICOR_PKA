@@ -75,7 +75,7 @@ const OuterWorldView = lazy(() =>
 // existing <div className="sidebar-group"> sections in Sidebar.tsx.
 //   'top'      — an UNGROUPED pinned block at the very top of the rail, above
 //                the Hub/Overview group (no section header). Reserved for the
-//                folder surfaces (Deliverables, Team Inbox) Tom wants one click
+//                folder surfaces (Deliverables, Team Inbox) are one click
 //                away.
 export type ModuleNavSection = 'top' | 'overview' | 'knowledge' | 'library';
 
@@ -105,7 +105,7 @@ export interface CockpitModule {
 // examples/library-module/README.md for the step-by-step worked example.
 export const COCKPIT_MODULES: readonly CockpitModule[] = [
   // Pinned to the very top of the rail (section 'top'), above Hub. These are the
-  // two folder surfaces Tom reaches for most; registration order here is their
+  // two folder surfaces reached for most; registration order here is their
   // render order in the top block.
   { slug: 'deliverables', navLabel: 'Deliverables', navIcon: Package, navSection: 'top', View: DeliverablesView },
   { slug: 'inbox', navLabel: 'Team Inbox', navIcon: Inbox, navSection: 'top', View: InboxView },

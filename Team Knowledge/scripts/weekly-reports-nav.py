@@ -14,7 +14,7 @@ WHAT IT DOES
 
     The block is self-contained: styles, markup, the manifest as inline JSON, and
     the toggle/filter behaviour. No external requests, so the page keeps working
-    from file:// (GL-058). Re-running is idempotent — the block is replaced, never
+    from file://. Re-running is idempotent — the block is replaced, never
     appended. When the markers are absent the block is inserted right after <body>
     and the markers are planted for next time.
 
@@ -28,7 +28,7 @@ SEARCH
     synonyms, entities, questions-it-answers). The in-page filter matches against
     title + slug + covers + that vocabulary, which behaves semantically without an
     embedding model — a file:// page cannot reach Ollama. True vector search over
-    the same corpus is SOP-030 / rag-query.py, and the two are complementary.
+    the same corpus is a separate concern, and the two are complementary.
 
 USAGE
     python3 "Team Knowledge/scripts/weekly-reports-nav.py" [--check] [--vault PATH]

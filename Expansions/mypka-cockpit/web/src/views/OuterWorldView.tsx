@@ -181,7 +181,7 @@ function OuterWorldCard({ item }: { item: OuterWorldItem }) {
               <p className="ow-card-desc">{item.embed_description}</p>
             )}
 
-            {/* The Inner-World annotation snippet — what Tom kept it for. */}
+            {/* The Inner-World annotation snippet — what it is kept for. */}
             {item.tom_context && (
               <p className="ow-card-note">{item.tom_context}</p>
             )}

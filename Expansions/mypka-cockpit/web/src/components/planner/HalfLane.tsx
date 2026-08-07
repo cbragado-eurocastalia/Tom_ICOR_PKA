@@ -3,7 +3,7 @@
 //
 // The lane's sortable items array = [...meeting anchors at their time slots,
 // ...placed task cards]. A task dropped at index i encodes the SEMANTIC read
-// (Tom's spec): above the first meeting = "before it"; between A and B = "in
+// (spec): above the first meeting = "before it"; between A and B = "in
 // between"; after the last = "after the day's meetings". We store {weekday, half,
 // neighbor ids}, never the prose — the ordered stack renders the meaning.
 //

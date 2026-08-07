@@ -26,9 +26,9 @@ import type { SaveStatus as SaveStatusModel } from '../../lib/useWorkbenchSave';
 
 interface Props {
   status: SaveStatusModel;
-  /** Called when Tom chooses "reload" on a 412 conflict. */
+  /** Called when the user chooses "reload" on a 412 conflict. */
   onReload: () => void;
-  /** Called when Tom chooses "overwrite" on a 412 conflict. */
+  /** Called when the user chooses "overwrite" on a 412 conflict. */
   onOverwrite: () => void;
 }
 

@@ -700,7 +700,7 @@ renames, revisit it as a deliberate GL-002 change — minimal viable would be an
 (`alias_slug`, `canonical_slug`) consulted before the orphan fallback. Flag it;
 don't build it speculatively.
 
-### 12.1 Install-time check + recommendation (per Tom's directive)
+### 12.1 Install-time check + recommendation (per product decision)
 
 During expansion installation, after the regen + `install-extensions.py`, the
 install flow should run a **read-only resolvability check** and recommend (never

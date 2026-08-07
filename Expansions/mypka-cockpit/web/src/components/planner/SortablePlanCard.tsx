@@ -75,7 +75,7 @@ export function SortableTaskCard({
 
   // M1 (WCAG 4.1.2 nested-interactive): the card BODY carries ONLY dnd-kit's
   // `listeners` (the pointer/keyboard EVENT HANDLERS) — so a pointer-grab on the
-  // whole card still lifts it (the natural kanban feel Tom wants), but the article
+  // whole card still lifts it (the natural kanban feel the design calls for), but the article
   // gets NO `role="button"`/`tabindex`/`aria-roledescription`. Those `attributes`
   // (the semantic drag-button role) live on the GRIP handle only, so the
   // drag-button is a leaf control, NOT a container wrapping the inner open / move-

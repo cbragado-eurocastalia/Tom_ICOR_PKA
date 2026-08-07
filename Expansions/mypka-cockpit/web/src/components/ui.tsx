@@ -124,7 +124,7 @@ export function StatusChip({ tone, children }: { tone: Tone; children: ReactNode
 }
 
 // ---- Severity (red / amber / green) — v2 -----------------------------------
-// Tom's explicit override: the metric status light must be unmistakable. Red maps
+// Product decision: the metric status light must be unmistakable. Red maps
 // to the GL-003 functional --status-error token (never decorative; here it's the
 // "discuss with doctor" signal that always travels with a plan link).
 const SEV_TEXT: Record<Severity, string> = {

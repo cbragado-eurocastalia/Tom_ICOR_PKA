@@ -1,20 +1,21 @@
 // valence.ts — frontend valence map for the MIND "patterns" cards (v3 #1).
 //
-// Tom wants each pattern coloured by whether it's a strength (good) or a struggle
+// Each pattern is coloured by whether it's a strength (good) or a struggle
 // (straining), so the patterns read at a glance as "where I'm solid vs where it hurts."
 //
 // IMPORTANT — this is a HARDCODED frontend map, on purpose and temporarily:
 //   • Inventing a `valence` frontmatter field on the Topic notes would require a
 //     GL-002 change first (root AGENTS.md: "Do NOT invent frontmatter fields").
 //   • So this map lives in the frontend for now and is FLAGGED to graduate into a
-//     GL-002 `valence` field on the pattern Topics, maintained by Anima (who owns
+//     GL-002 `valence` field on the pattern Topics, maintained by whichever
+//     specialist owns (
 //     the psyche/inner-work layer). Once that field exists, the server reads it
 //     from `topics.valence` and this map is deleted. Handoff noted to Larry.
 //
 // Tone vocabulary (calm, not alarmist — health-anxiety-aware):
 //   good     → a core value / strength (green)
 //   watch    → a real but managed tension ("watch", amber)
-//   strain   → a painful one Tom is actively struggling with (red, but soft)
+//   strain   → a painful one the user is actively struggling with (red, but soft)
 //   neutral  → unknown / unmapped pattern (no colour, honest default)
 
 export type ValenceTone = 'good' | 'watch' | 'strain' | 'neutral';
@@ -36,7 +37,7 @@ export interface Valence {
 // object of { "<your-topic-slug>": { "tone": "good|watch|strain|neutral",
 // "label": "..." } }. Unset or malformed → empty map → neutral for every slug.
 // (FLAGGED to graduate into a GL-002 `valence` field on the pattern Topics,
-// maintained by Anima; once that field exists, the server reads `topics.valence`
+// maintained by that owner; once the field exists, the server reads `topics.valence`
 // and this map is deleted entirely. Handoff noted to Larry.)
 function loadValenceMap(): Record<string, Valence> {
   const raw = import.meta.env.VITE_MIND_VALENCE_MAP;
