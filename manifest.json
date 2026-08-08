@@ -1,6 +1,6 @@
 {
   "_about": "This is the single source of truth (SSOT) for the myPKA scaffold version and for the framework/user-state seam. The scaffold version lives HERE, authoritatively. VERSION and .scaffold-version are kept for back-compat with older tooling, but they mirror this file; if they ever disagree, manifest.json wins. The framework_paths and user_state_paths blocks are machine-readable: the updater (scripts/update-scaffold.py) reads them to decide which files it MAY overwrite (framework, ours, upgradable) and which it must NEVER touch (user state, yours, sacred). Markdown is canonical; this JSON is the control plane that lets the folder update itself safely.",
-  "scaffold_version": "5.5.0",
+  "scaffold_version": "5.5.1",
   "released": "2026-08-08",
   "from": "5.4.0",
   "breaking": false,
@@ -93,7 +93,7 @@
     "disclosure": "On boot, myPKA fetches one version string from the official myPKA repository (myICOR/myPKA) to tell you if an update exists. That request sends no data about you or your vault. It is read-only and fails silently if you are offline. Set update_check.enabled to false to turn it off."
   },
   "changes": {
-    "_about": "Per-path change record for THIS release (5.4.0 -> 5.5.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.5.0: a privacy fix. Personal context belonging to the scaffold's author shipped inside the released template from v3.0.0 onward and was reported privately by a member. The Cockpit's health dashboard carried hardcoded plan strings and threshold comments describing one specific person's medical situation, and the install-time personalization pass could rewrite the author's name to the installing member's, which re-attributed that content to them and removed the only clue it was not theirs. This release strips the author's personal context and roughly 100 name mentions across 45 files, scopes the personalization rule so it can never touch source code, fixes weekly-report edition numbering (which hardcoded an anchor from the author's own archive and implied dozens of back-issues a new member never had), and adds scripts/check-no-personal-data.py plus a privacy-guard workflow as the gate that should have caught it. Releases v3.0.0 through v5.4.0 are withdrawn.",
+    "_about": "Per-path change record for THIS release (5.4.0 -> 5.5.1), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.5.0: a privacy fix. Personal context belonging to the scaffold's author shipped inside the released template from v3.0.0 onward and was reported privately by a member. The Cockpit's health dashboard carried hardcoded plan strings and threshold comments describing one specific person's medical situation, and the install-time personalization pass could rewrite the author's name to the installing member's, which re-attributed that content to them and removed the only clue it was not theirs. This release strips the author's personal context and roughly 100 name mentions across 45 files, scopes the personalization rule so it can never touch source code, fixes weekly-report edition numbering (which hardcoded an anchor from the author's own archive and implied dozens of back-issues a new member never had), and adds scripts/check-no-personal-data.py plus a privacy-guard workflow as the gate that should have caught it. Releases v3.0.0 through v5.4.0 are withdrawn.",
     "paths": [
       {
         "path": "Expansions/mypka-cockpit/web/src/lib/status.ts",
@@ -168,22 +168,22 @@
       {
         "path": "manifest.json",
         "change_type": "changed",
-        "note": "scaffold_version 5.4.0 -> 5.5.0; changes block rewritten for this release."
+        "note": "scaffold_version 5.4.0 -> 5.5.1; changes block rewritten for this release."
       },
       {
         "path": "VERSION",
         "change_type": "changed",
-        "note": "5.4.0 -> 5.5.0 (mirror of manifest)."
+        "note": "5.4.0 -> 5.5.1 (mirror of manifest)."
       },
       {
         "path": ".scaffold-version",
         "change_type": "changed",
-        "note": "5.4.0 -> 5.5.0 (mirror of manifest)."
+        "note": "5.4.0 -> 5.5.1 (mirror of manifest)."
       },
       {
         "path": "CHANGELOG.md",
         "change_type": "changed",
-        "note": "Prepended the [5.5.0] entry."
+        "note": "Prepended the [5.5.1] entry (5.5.0 was withdrawn minutes after publication)."
       },
       {
         "path": "SECURITY.md",
@@ -194,6 +194,11 @@
         "path": ".gitattributes",
         "change_type": "added",
         "note": "New. Marks .github/ as export-ignore so repository infrastructure (issue templates, PR template, our own CI pipeline and the Supabase project URL, edge-function name and secret names inside it) no longer ships inside the scaffold ZIP. It was already outside framework_paths and user_state_paths, so the updater never managed it."
+      },
+      {
+        "path": ".privacy-guard.json",
+        "change_type": "added",
+        "note": "New, and deliberately NOT shipped (export-ignore). Holds the maintainer names and exact allowed strings for scripts/check-no-personal-data.py, so the guard can check for a name without carrying that name into every member's folder."
       }
     ]
   },

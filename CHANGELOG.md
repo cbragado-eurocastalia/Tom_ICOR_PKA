@@ -2,7 +2,9 @@
 
 All notable changes to the myPKA scaffold are tracked here. Versions follow semver: MAJOR for breaking structural changes, MINOR for additions, PATCH for fixes.
 
-## [5.5.0] - 2026-08-08
+## [5.5.1] - 2026-08-08
+
+> **5.5.0 was published for a few minutes and withdrawn.** Its copy of the new privacy guard hardcoded the maintainer names it was checking for, which put those names into the very folder the guard exists to keep them out of. The names now live in a repo-local config that is not shipped. 5.5.1 is 5.5.0 plus that correction; everything below applies to both.
 
 **Privacy fix: the scaffold no longer carries anything about its author.** A member auditing their own installation found personal context belonging to the scaffold's author shipped inside the released template, and reported it privately instead of opening an issue. The report was accurate. This release removes what they found, plus everything of the same kind that a full sweep turned up afterwards, and adds the check that should have caught it.
 
