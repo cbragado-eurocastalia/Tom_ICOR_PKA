@@ -93,7 +93,7 @@
     "disclosure": "On boot, myPKA fetches one version string from the official myPKA repository (myICOR/myPKA) to tell you if an update exists. That request sends no data about you or your vault. It is read-only and fails silently if you are offline. Set update_check.enabled to false to turn it off."
   },
   "changes": {
-    "_about": "Per-path change record for THIS release (5.4.0 -> 5.5.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.5.0: a privacy fix. Personal context belonging to the scaffold's author shipped inside the released template from v3.0.0 onward and was reported privately by a member. The Cockpit's health dashboard carried hardcoded plan strings and threshold comments describing one specific person's medical situation, and the install-time personalization pass could rewrite the author's name to the installing member's, which re-attributed that content to them and removed the only clue it was not theirs. This release strips the author's personal context and roughly 100 name mentions across 45 files, scopes the personalization rule so it can never touch source code, fixes weekly-report edition numbering (which hardcoded the author's own edition 28 as an anchor and implied ~31 back-issues a new member never had), and adds scripts/check-no-personal-data.py plus a privacy-guard workflow as the gate that should have caught it. Releases v3.0.0 through v5.4.0 are withdrawn.",
+    "_about": "Per-path change record for THIS release (5.4.0 -> 5.5.0), so the updater can print a plain-English plan. change_type is one of: added | changed | moved. HEADLINE of 5.5.0: a privacy fix. Personal context belonging to the scaffold's author shipped inside the released template from v3.0.0 onward and was reported privately by a member. The Cockpit's health dashboard carried hardcoded plan strings and threshold comments describing one specific person's medical situation, and the install-time personalization pass could rewrite the author's name to the installing member's, which re-attributed that content to them and removed the only clue it was not theirs. This release strips the author's personal context and roughly 100 name mentions across 45 files, scopes the personalization rule so it can never touch source code, fixes weekly-report edition numbering (which hardcoded an anchor from the author's own archive and implied dozens of back-issues a new member never had), and adds scripts/check-no-personal-data.py plus a privacy-guard workflow as the gate that should have caught it. Releases v3.0.0 through v5.4.0 are withdrawn.",
     "paths": [
       {
         "path": "Expansions/mypka-cockpit/web/src/lib/status.ts",
@@ -123,7 +123,7 @@
       {
         "path": "scripts/check-no-personal-data.py",
         "change_type": "added",
-        "note": "New. Release gate scanning for maintainer personal data (names, insurance-scheme markers, named conditions, ages, outstanding-referral phrasing). Exits non-zero with file:line per finding."
+        "note": "New. Release gate scanning for maintainer personal data (names, insurance-scheme markers, named medical conditions, ages, outstanding-referral phrasing). Exits non-zero with file:line per finding. Names come from a repo-local .privacy-guard.json that is NOT shipped, so no maintainer name lands in your folder; --require-config makes a missing name list a failure rather than a quiet pass."
       },
       {
         "path": ".github/workflows/privacy-guard.yml",
@@ -138,7 +138,7 @@
       {
         "path": "Team Knowledge/scripts/weekly-report-render.py",
         "change_type": "changed",
-        "note": "edition_no() no longer hardcodes the author's edition 28 anchor; numbering derives from your own first filed edition and starts at 1. Pin an existing series with WEEKLY_REPORT_EDITION_ANCHOR=\"YYYY-MM-DD:N\". Private-vault provenance comments and dangling SOP/GL references removed; is_zenon renamed is_reflection."
+        "note": "edition_no() no longer hardcodes an anchor from the author's own archive; numbering derives from your own first filed edition and starts at 1. Pin an existing series with WEEKLY_REPORT_EDITION_ANCHOR=\"YYYY-MM-DD:N\". Private-vault provenance comments and dangling SOP/GL references removed; the reflection-entry flag is renamed and no longer matches a private specialist slug."
       },
       {
         "path": "Team Knowledge/scripts/weekly-report-gather.py",

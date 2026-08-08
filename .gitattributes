@@ -12,3 +12,4 @@
 # tracker and are equally useless in a member's vault.
 .github/ export-ignore
 .gitattributes export-ignore
+.privacy-guard.json export-ignore

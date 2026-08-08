@@ -1,0 +1,8 @@
+{
+  "_about": "Config for scripts/check-no-personal-data.py. NOT shipped inside the scaffold ZIP (export-ignore in .gitattributes), because a maintainer's name belongs in this repository's release tooling, never in every member's folder. 'allowed' holds EXACT strings that are legitimate; add an exact string rather than widening a pattern.",
+  "forbidden_names": ["Tom", "Rödl", "Roedl"],
+  "allowed": [
+    "Dr. Thomas Rödl",
+    "\"the author builds the system\" → \"Dr. Thomas Rödl builds the system\""
+  ]
+}
